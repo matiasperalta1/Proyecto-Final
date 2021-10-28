@@ -12,7 +12,7 @@ namespace ProyectoFinalElectricidadSeret.Models
             Clientes = new HashSet<Cliente>();
         }
 
-        public int CacCodcac { get; set; }
+        public uint CacCodcac { get; set; }
         public string CacDescri { get; set; }
         public string CacAbrevi { get; set; }
 

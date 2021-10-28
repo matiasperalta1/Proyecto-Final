@@ -14,9 +14,11 @@ namespace ProyectoFinalElectricidadSeret.Models
             Ctasbancs = new HashSet<Ctasbanc>();
             Tarjeta = new HashSet<Tarjeta>();
         }
+
         public int BanCodban { get; set; }
         public string BanDesban { get; set; }
         public string BanAbrevi { get; set; }
+
         public virtual ICollection<BancContac> BancContacs { get; set; }
         public virtual ICollection<Chequera> Chequeras { get; set; }
         public virtual ICollection<Ctasbanc> Ctasbancs { get; set; }

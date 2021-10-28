@@ -13,5 +13,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal? MonValmon { get; set; }
         public string MonNomusu { get; set; }
         public string MonOperac { get; set; }
+        public DateTime MonFecope { get; set; }
     }
 }

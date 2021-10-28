@@ -10,7 +10,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int CasCodcas { get; set; }
         public string CasSmtpcs { get; set; }
         public int? CasSmtppu { get; set; }
-        public byte? CasAutent { get; set; }
+        public sbyte? CasAutent { get; set; }
         public string CasUsuari { get; set; }
         public string CasContra { get; set; }
         public string CasCodifi { get; set; }

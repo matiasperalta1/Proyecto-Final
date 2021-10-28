@@ -10,8 +10,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         public Condpago()
         {
             Clientes = new HashSet<Cliente>();
-            Proveedores = new HashSet<Proveedore>();
             Facturascs = new HashSet<Facturasc>();
+            Proveedores = new HashSet<Proveedore>();
         }
 
         public int CopCodcpa { get; set; }
@@ -27,8 +27,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal CopDto3 { get; set; }
         public decimal CopRec1 { get; set; }
         public int? CopCodlis { get; set; }
-        public virtual Listapre CopCodlisNavigation { get; set; }
 
+        public virtual Listapre CopCodlisNavigation { get; set; }
         public virtual ICollection<Cliente> Clientes { get; set; }
         public virtual ICollection<Facturasc> Facturascs { get; set; }
         public virtual ICollection<Proveedore> Proveedores { get; set; }

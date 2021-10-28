@@ -16,7 +16,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string LinCodlin { get; set; }
         public string LinDescri { get; set; }
         public string LinObserv { get; set; }
-        public short LinDivweb { get; set; }
+        public ushort LinDivweb { get; set; }
         public byte LinActiva { get; set; }
 
         public virtual ICollection<Articulo> Articulos { get; set; }

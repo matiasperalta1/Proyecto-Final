@@ -50,6 +50,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int? ArtCodtar { get; set; }
         public bool? ArtCompue { get; set; }
         public bool? ArtDispon { get; set; }
-        public int Id { get; set; }
+        public uint Id { get; set; }
     }
 }

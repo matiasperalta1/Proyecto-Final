@@ -13,6 +13,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string ModDescri { get; set; }
         public decimal ModDebe { get; set; }
         public decimal ModHaber { get; set; }
+        public DateTime ModFehomo { get; set; }
         public string ModObserv { get; set; }
 
         public virtual Concepto ModCodcopNavigation { get; set; }

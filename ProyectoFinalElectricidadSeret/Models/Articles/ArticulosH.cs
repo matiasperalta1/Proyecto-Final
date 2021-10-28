@@ -13,5 +13,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int AreCodmon { get; set; }
         public string AreUsuari { get; set; }
         public string AreOperac { get; set; }
+        public DateTime AreFecope { get; set; }
     }
 }

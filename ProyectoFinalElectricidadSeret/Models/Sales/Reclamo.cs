@@ -15,7 +15,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int RecId { get; set; }
         public decimal RecNumero { get; set; }
         public DateTime? RecFecha { get; set; }
-        public bool? RecGarant { get; set; }
+        public ulong RecGarant { get; set; }
         public string RecEstado { get; set; }
         public string RecCodart { get; set; }
         public decimal RecCantid { get; set; }
@@ -28,13 +28,13 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal RecPrflete { get; set; }
         public decimal RecPrtota { get; set; }
         public string RecInfrep { get; set; }
-        public byte RecTipcom { get; set; }
+        public sbyte RecTipcom { get; set; }
         public decimal RecNrocom { get; set; }
         public string RecTratam { get; set; }
 
+        public virtual Articulo RecCodartNavigation { get; set; }
         public virtual Cliente RecCodcliNavigation { get; set; }
         public virtual Proveedore RecCodproNavigation { get; set; }
-        public virtual Articulo RecCodartNavigation { get; set; }
         public virtual ICollection<ReclMov> ReclMovs { get; set; }
     }
 }

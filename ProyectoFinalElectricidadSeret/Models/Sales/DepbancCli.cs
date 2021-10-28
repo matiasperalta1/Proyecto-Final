@@ -12,7 +12,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal DecImpdep { get; set; }
         public DateTime? DecFecdep { get; set; }
         public string DecNromov { get; set; }
-        public int? DecCodcli { get; set; }
+        public decimal? DecCodcli { get; set; }
         public string DecDescli { get; set; }
         public string DecObserv { get; set; }
     }

@@ -9,15 +9,15 @@ namespace ProyectoFinalElectricidadSeret.Models
     {
         public Articulo()
         {
-            ArticAconds = new HashSet<ArticAcond>();
             ArtMovs = new HashSet<ArtMov>();
             ArtProves = new HashSet<ArtProve>();
+            ArticAconds = new HashSet<ArticAcond>();
             ArticStocks = new HashSet<ArticStock>();
             ArticUbics = new HashSet<ArticUbic>();
-            Precios = new HashSet<Precio>();
-            Reglapres = new HashSet<Reglapre>();
             CarritoDets = new HashSet<CarritoDet>();
+            Precios = new HashSet<Precio>();
             Reclamos = new HashSet<Reclamo>();
+            Reglapres = new HashSet<Reglapre>();
         }
 
         public string ArtCodart { get; set; }
@@ -95,12 +95,12 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual Equivalencia Equivalencia { get; set; }
         public virtual ICollection<ArtMov> ArtMovs { get; set; }
         public virtual ICollection<ArtProve> ArtProves { get; set; }
+        public virtual ICollection<ArticAcond> ArticAconds { get; set; }
         public virtual ICollection<ArticStock> ArticStocks { get; set; }
         public virtual ICollection<ArticUbic> ArticUbics { get; set; }
-        public virtual ICollection<Precio> Precios { get; set; }
-        public virtual ICollection<Reglapre> Reglapres { get; set; }
-        public virtual ICollection<ArticAcond> ArticAconds { get; set; }
         public virtual ICollection<CarritoDet> CarritoDets { get; set; }
+        public virtual ICollection<Precio> Precios { get; set; }
         public virtual ICollection<Reclamo> Reclamos { get; set; }
+        public virtual ICollection<Reglapre> Reglapres { get; set; }
     }
 }

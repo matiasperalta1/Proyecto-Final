@@ -12,6 +12,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int UymNumopc { get; set; }
         public string UymDesopc { get; set; }
         public int? UymNivacc { get; set; }
+
         public virtual Menu UymCodmenNavigation { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace ProyectoFinalElectricidadSeret.Data
         {
         }
 
+        public virtual DbSet<Acceso> Accesos { get; set; }
         public virtual DbSet<ArtComp> ArtComps { get; set; }
         public virtual DbSet<ArtEtiq> ArtEtiqs { get; set; }
         public virtual DbSet<ArtImp> ArtImps { get; set; }
@@ -152,10 +153,55 @@ namespace ProyectoFinalElectricidadSeret.Data
         public virtual DbSet<Unimed> Unimeds { get; set; }
         public virtual DbSet<UsuaMenu> UsuaMenus { get; set; }
         public virtual DbSet<Usuario> Usuarios { get; set; }
-
+        public virtual DbSet<Vendedore> Vendedores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasCharSet("utf8mb4")
+                .UseCollation("utf8mb4_0900_ai_ci");
+
+            modelBuilder.Entity<Acceso>(entity =>
+            {
+                entity.HasKey(e => new { e.AccCodacc, e.AccFecing })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                entity.ToTable("accesos");
+
+                entity.HasComment("Ingressos y egresos al sistema")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
+                entity.Property(e => e.AccCodacc)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("ACC_CODACC")
+                    .HasComment("Ingreso");
+
+                entity.Property(e => e.AccFecing)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("ACC_FECING")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.AccNompc)
+                    .HasMaxLength(15)
+                    .HasColumnName("ACC_NOMPC")
+                    .HasComment("puesto");
+
+                entity.Property(e => e.AccNomusu)
+                    .HasMaxLength(10)
+                    .HasColumnName("ACC_NOMUSU")
+                    .HasComment("Usuario");
+
+                entity.Property(e => e.AccObserv)
+                    .HasMaxLength(30)
+                    .HasColumnName("ACC_OBSERV");
+
+                entity.Property(e => e.AccTipo)
+                    .HasMaxLength(1)
+                    .HasColumnName("ACC_TIPO")
+                    .HasComment("tipo de movimiento E/S");
+            });
+
             modelBuilder.Entity<ArtComp>(entity =>
             {
                 entity.HasKey(e => e.ArcCodart)
@@ -163,7 +209,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("art_comp");
 
-                entity.HasComment("Articulos compuestos");
+                entity.HasComment("Articulos compuestos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ArcCodart)
                     .HasMaxLength(15)
@@ -171,7 +219,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("codigo del articulo");
 
                 entity.Property(e => e.ArcCantid)
-                    .HasColumnType("decimal(7,2)")
+                    .HasPrecision(7, 2)
                     .HasColumnName("ARC_CANTID")
                     .HasComment("Cantidad");
 
@@ -192,6 +240,9 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasName("PRIMARY");
 
                 entity.ToTable("art_etiq");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EtiId)
                     .HasColumnName("ETI_ID")
@@ -220,6 +271,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("art_imp");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.AriId).HasColumnName("ARI_ID");
 
                 entity.Property(e => e.AriCodart)
@@ -229,16 +283,24 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.AriError)
                     .HasMaxLength(255)
                     .HasColumnName("ARI_ERROR");
+
+                entity.Property(e => e.AriFechor)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("ARI_FECHOR")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
             modelBuilder.Entity<ArtMov>(entity =>
             {
                 entity.HasKey(e => new { e.AymNromov, e.AymLinea })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("art_mov");
 
-                entity.HasComment("Articulos - Movimientos de stock");
+                entity.HasComment("Articulos - Movimientos de stock")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.AymCodart, "fk_art_mov_articulos1");
 
@@ -247,7 +309,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.HasIndex(e => e.AymCodmov, "fk_art_mov_movstock1");
 
                 entity.Property(e => e.AymNromov)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("AYM_NROMOV")
                     .HasComment("Nro de movimiento");
 
@@ -256,7 +318,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea");
 
                 entity.Property(e => e.AymCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("AYM_CANTID")
                     .HasComment("Cantidad");
 
@@ -311,19 +373,20 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("art_movhis");
 
-                entity.HasComment("Articulos -\r\n\r\nMovimientos de stock hist");
+                entity.HasComment("Articulos -\r\n\r\nMovimientos de stock hist")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.AymCodart, "fk_art_mov_articulos1");
 
                 entity.HasIndex(e => e.AymCoddep, "fk_art_mov_depositos1");
 
                 entity.Property(e => e.AymNromov)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("AYM_NROMOV")
                     .HasComment("Nro de movimiento");
 
                 entity.Property(e => e.AymCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("AYM_CANTID")
                     .HasComment("Cantidad");
 
@@ -342,8 +405,14 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("AYM_CODDEP")
                     .HasComment("Codigo de deposito");
 
+                entity.Property(e => e.AymFecmov)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("AYM_FECMOV")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("Fecha del movimiento");
+
                 entity.Property(e => e.AymNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("AYM_NROCOM")
                     .HasComment("Nro. Comprobante");
 
@@ -363,11 +432,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ArtProve>(entity =>
             {
                 entity.HasKey(e => new { e.AypCodpro, e.AypCodart })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("art_prove");
 
-                entity.HasComment("articulos y proveedores");
+                entity.HasComment("articulos y proveedores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.AypCodart, "fk_art_prove_articulos1");
 
@@ -396,11 +468,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ArticAcond>(entity =>
             {
                 entity.HasKey(e => new { e.AyaCodart, e.AyaLinea })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("artic_acond");
 
-                entity.HasComment("Articulos y acondicionamientos");
+                entity.HasComment("Articulos y acondicionamientos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AyaCodart)
                     .HasMaxLength(15)
@@ -412,7 +487,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea");
 
                 entity.Property(e => e.AyaCant)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AYA_CANT")
                     .HasComment("Cantidad");
 
@@ -423,20 +498,26 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.AyaObserv)
                     .HasMaxLength(50)
                     .HasColumnName("AYA_OBSERV")
-                    .HasComment("Observaciones");
+                    .HasComment("Observaciones")
+                    .UseCollation("latin1_swedish_ci")
+                    .HasCharSet("latin1");
 
                 entity.Property(e => e.AyaTipo)
                     .IsRequired()
                     .HasMaxLength(15)
                     .HasColumnName("AYA_TIPO")
-                    .HasComment("Tipo acondiconamiento ROLLO BOBINA");
+                    .HasComment("Tipo acondiconamiento ROLLO BOBINA")
+                    .UseCollation("latin1_swedish_ci")
+                    .HasCharSet("latin1");
 
                 entity.Property(e => e.AyaUnmed)
                     .IsRequired()
                     .HasMaxLength(6)
                     .HasColumnName("AYA_UNMED")
                     .HasDefaultValueSql("' '")
-                    .HasComment("Unidad de medida");
+                    .HasComment("Unidad de medida")
+                    .UseCollation("latin1_swedish_ci")
+                    .HasCharSet("latin1");
 
                 entity.HasOne(d => d.AyaCodartNavigation)
                     .WithMany(p => p.ArticAconds)
@@ -448,11 +529,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ArticAct>(entity =>
             {
                 entity.HasKey(e => new { e.TmpCodmar, e.TmpCodori })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("artic_act");
 
-                entity.HasComment("Temporario de articulos p/actualizar precios");
+                entity.HasComment("Temporario de articulos p/actualizar precios")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.TmpCodori, "kf_art_act_articulos_idx");
 
@@ -467,7 +551,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de Articulo");
 
                 entity.Property(e => e.TmpPrecos)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("TMP_PRECOS")
                     .HasComment("Precio de costo");
 
@@ -481,11 +565,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ArticStock>(entity =>
             {
                 entity.HasKey(e => new { e.AstCodart, e.AstCoddep })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("artic_stock");
 
-                entity.HasComment("Stock de articulos por deposito");
+                entity.HasComment("Stock de articulos por deposito")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.AstCodart, "fk_artic_stock_articulos1");
 
@@ -501,7 +588,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de Deposito");
 
                 entity.Property(e => e.AstCanped)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AST_CANPED")
                     .HasComment("cantidad pedida del deposito");
 
@@ -511,22 +598,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.AstStoact)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AST_STOACT")
                     .HasComment("Stock actual del dpeosito");
 
                 entity.Property(e => e.AstStocom)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AST_STOCOM")
                     .HasComment("Stock comprometido del deposito");
 
                 entity.Property(e => e.AstStomax)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AST_STOMAX")
                     .HasComment("Stock maximo del deposito");
 
                 entity.Property(e => e.AstStomin)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AST_STOMIN")
                     .HasComment("Stock minimo del deposito");
 
@@ -546,11 +633,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ArticTmp>(entity =>
             {
                 entity.HasKey(e => new { e.TmpCodori, e.TmpCodpro, e.TmpCodmar })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("artic_tmp");
 
-                entity.HasComment("Temporario de articulos p/actualizar precios");
+                entity.HasComment("Temporario de articulos p/actualizar precios")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.TmpCodmar, "fk_artic_tmp_marcas_idx");
 
@@ -580,7 +670,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripcion");
 
                 entity.Property(e => e.TmpDtocom)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("TMP_DTOCOM")
                     .HasComment("Descuento");
 
@@ -590,7 +680,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de actualizacion");
 
                 entity.Property(e => e.TmpPrecos)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("TMP_PRECOS")
                     .HasComment("Precio de costo");
 
@@ -604,7 +694,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("TMP_UMCOMP");
 
                 entity.Property(e => e.TmpValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("TMP_VALIVA")
                     .HasComment("Valor de Iva");
 
@@ -624,11 +714,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ArticUbic>(entity =>
             {
                 entity.HasKey(e => new { e.AyuCodart, e.AyuCoddep })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("artic_ubic");
 
-                entity.HasComment("Ubicación de los artículos");
+                entity.HasComment("Ubicación de los artículos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.AyuCodart, "fk_artic_ubic_articulos1");
 
@@ -683,7 +776,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("articulos");
 
-                entity.HasComment("Maestro de Articulos");
+                entity.HasComment("Maestro de Articulos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.ArtCodbar, "articulos_01");
 
@@ -715,29 +810,32 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Acondicionamiento");
 
                 entity.Property(e => e.ArtAgrmp1)
+                    .HasColumnType("text")
                     .HasColumnName("ART_AGRMP1")
                     .HasComment("Agrupammiento MP1");
 
                 entity.Property(e => e.ArtAgrmp2)
+                    .HasColumnType("text")
                     .HasColumnName("ART_AGRMP2")
                     .HasComment("Agrupamiento MP2");
 
                 entity.Property(e => e.ArtAgrmp3)
+                    .HasColumnType("text")
                     .HasColumnName("ART_AGRMP3")
                     .HasComment("Agrupamiento MP3");
 
                 entity.Property(e => e.ArtAlto)
-                    .HasColumnType("decimal(7,2)")
+                    .HasPrecision(7, 2)
                     .HasColumnName("ART_ALTO")
                     .HasComment("Alto cm");
 
                 entity.Property(e => e.ArtAncho)
-                    .HasColumnType("decimal(7,2)")
+                    .HasPrecision(7, 2)
                     .HasColumnName("ART_ANCHO")
                     .HasComment("Ancho cm");
 
                 entity.Property(e => e.ArtCanped)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_CANPED")
                     .HasComment("Cantidad de articulos pedidos");
 
@@ -803,7 +901,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo tpo de articulo ");
 
                 entity.Property(e => e.ArtCoefcv)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("ART_COEFCV")
                     .HasDefaultValueSql("'1.00'")
                     .HasComment("Coeficiente unidad de compra unidad de venta");
@@ -813,7 +911,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Articulo Compuesto - 0=SIMPLE/1=CABECERA DE GRUPO/2=INTEGRANTE DE GRUPO/3=KIT-COMBO");
 
                 entity.Property(e => e.ArtComvta)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_COMVTA")
                     .HasComment("Comisión s/ventas");
 
@@ -833,6 +931,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripción");
 
                 entity.Property(e => e.ArtDescrl)
+                    .HasColumnType("text")
                     .HasColumnName("ART_DESCRL")
                     .HasComment("Descripción larga");
 
@@ -851,12 +950,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Art. disponible p/comercialización");
 
                 entity.Property(e => e.ArtDtocom)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("ART_DTOCOM")
                     .HasComment("Descuento s/precio de lista en compras");
 
                 entity.Property(e => e.ArtDtovta)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_DTOVTA")
                     .HasComment("Descuento p /ventas");
 
@@ -910,7 +1009,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Imagen auxiliar 4");
 
                 entity.Property(e => e.ArtImpues)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_IMPUES")
                     .HasComment("Impuesto interno sobre el articulo");
 
@@ -920,17 +1019,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.ArtPeso)
-                    .HasColumnType("decimal(7,2)")
+                    .HasPrecision(7, 2)
                     .HasColumnName("ART_PESO")
                     .HasComment("Peso kg");
 
                 entity.Property(e => e.ArtPrecos)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("ART_PRECOS")
                     .HasComment("Precio de costo s/iva");
 
                 entity.Property(e => e.ArtProfun)
-                    .HasColumnType("decimal(7,2)")
+                    .HasPrecision(7, 2)
                     .HasColumnName("ART_PROFUN")
                     .HasComment("Profundidad cm");
 
@@ -939,22 +1038,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Articulo en promocion: 0=no, 1=si");
 
                 entity.Property(e => e.ArtStoact)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOACT")
                     .HasComment("Cantidad en stock actual");
 
                 entity.Property(e => e.ArtStocom)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOCOM")
                     .HasComment("Stock comprometido");
 
                 entity.Property(e => e.ArtStomax)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOMAX")
                     .HasComment("Stock maximo");
 
                 entity.Property(e => e.ArtStomin)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOMIN")
                     .HasComment("Stock minimo");
 
@@ -963,6 +1062,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Stock verificado");
 
                 entity.Property(e => e.ArtTags)
+                    .HasColumnType("text")
                     .HasColumnName("ART_TAGS")
                     .HasComment("Etiquetas p/busqueda en EComerce");
 
@@ -999,12 +1099,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Usa Nro. de serie");
 
                 entity.Property(e => e.ArtValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("ART_VALIVA")
                     .HasComment("Porcentaje de IVA");
 
                 entity.Property(e => e.ArtVolume)
-                    .HasColumnType("decimal(7,2)")
+                    .HasPrecision(7, 2)
                     .HasColumnName("ART_VOLUME")
                     .HasComment("Volumen cc");
 
@@ -1058,7 +1158,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("articulos_h");
 
-                entity.HasComment("Historico de artículos (precios)");
+                entity.HasComment("Historico de artículos (precios)")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdMovArt)
                     .HasColumnName("Id_MovArt")
@@ -1073,12 +1175,18 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("ARE_CODMON")
                     .HasComment("Codigo Moneda");
 
+                entity.Property(e => e.AreFecope)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("ARE_FECOPE")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("Fecha de operacion");
+
                 entity.Property(e => e.AreOperac)
                     .HasMaxLength(3)
                     .HasColumnName("ARE_OPERAC");
 
                 entity.Property(e => e.ArePrecos)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("ARE_PRECOS")
                     .HasComment("Precio Costo");
 
@@ -1091,11 +1199,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<BancContac>(entity =>
             {
                 entity.HasKey(e => new { e.BycCodbce, e.BycCodcon })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("banc_contac");
 
-                entity.HasComment("Bancos de la empresa y contactos");
+                entity.HasComment("Bancos de la empresa y contactos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.BycCodcon, "fk_table1_contactos1");
 
@@ -1104,7 +1215,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de banco");
 
                 entity.Property(e => e.BycCodcon)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("BYC_CODCON")
                     .HasComment("Codigo de contacto");
 
@@ -1128,7 +1239,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("bancos");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.BanCodban)
+                    .ValueGeneratedNever()
                     .HasColumnName("BAN_CODBAN")
                     .HasComment("Codigo de banco");
 
@@ -1150,7 +1265,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("bcos_cbanc_emp");
 
-                entity.HasComment("Cuentas bancarias de la empresa");
+                entity.HasComment("Cuentas bancarias de la empresa")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.BceCodciv, "fk_proveedores_condiva1");
 
@@ -1159,7 +1276,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.HasIndex(e => e.BceCodprv, "fk_proveedores_provincia1");
 
                 entity.Property(e => e.BceCodbce)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("BCE_CODBCE");
 
                 entity.Property(e => e.BceCbucta)
@@ -1176,7 +1293,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de cuenta contable");
 
                 entity.Property(e => e.BceCodloc)
-                    .HasColumnType("decimal(5,0)")
+                    .HasPrecision(5)
                     .HasColumnName("BCE_CODLOC");
 
                 entity.Property(e => e.BceCodmon)
@@ -1184,7 +1301,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de moneda");
 
                 entity.Property(e => e.BceCodprv)
-                    .HasColumnType("decimal(3,0)")
+                    .HasPrecision(3)
                     .HasColumnName("BCE_CODPRV");
 
                 entity.Property(e => e.BceCuit)
@@ -1203,7 +1320,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripcion de la cuenta");
 
                 entity.Property(e => e.BceDescub)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("BCE_DESCUB")
                     .HasComment("Descubierto");
 
@@ -1238,7 +1355,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de cuenta");
 
                 entity.Property(e => e.BceObserv)
-                    .HasColumnType("longtext")
                     .HasColumnName("BCE_OBSERV")
                     .HasComment("Observaciones");
 
@@ -1296,9 +1412,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("cajas");
 
-                entity.HasComment("Cajas");
+                entity.HasComment("Cajas")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CajCodcaj)
+                    .ValueGeneratedNever()
                     .HasColumnName("CAJ_CODCAJ")
                     .HasComment("Codigo de caja");
 
@@ -1316,11 +1435,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CajasAyc>(entity =>
             {
                 entity.HasKey(e => new { e.AycNumses, e.AycFecmov })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("cajas_ayc");
 
-                entity.HasComment("Aperturas y cierres de caja");
+                entity.HasComment("Aperturas y cierres de caja")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AycNumses)
                     .HasColumnName("AYC_NUMSES")
@@ -1342,27 +1464,27 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de cierre");
 
                 entity.Property(e => e.AycRecche)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AYC_RECCHE")
                     .HasComment("recaudacion de cheques");
 
                 entity.Property(e => e.AycRecdep)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AYC_RECDEP")
                     .HasComment("recaudacion de depositos transferencias");
 
                 entity.Property(e => e.AycRecefe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AYC_RECEFE")
                     .HasComment("recaudacion de efectivo");
 
                 entity.Property(e => e.AycRectar)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AYC_RECTAR")
                     .HasComment("recaudacion de tarjetas");
 
                 entity.Property(e => e.AycRectot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("AYC_RECTOT")
                     .HasComment("recaudacion total");
 
@@ -1384,6 +1506,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("carrito");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.CarId)
                     .HasColumnName("CAR_ID")
                     .HasComment("Id carrito");
@@ -1400,6 +1525,9 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasName("PRIMARY");
 
                 entity.ToTable("carrito_det");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CadCodart, "fk_carrito_det_articulos_idx");
 
@@ -1444,12 +1572,15 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("casillas_correo");
 
-                entity.HasComment("Casillas de correo salientes");
+                entity.HasComment("Casillas de correo salientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.CasCodcas).HasColumnName("CAS_CODCAS");
+                entity.Property(e => e.CasCodcas)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CAS_CODCAS");
 
                 entity.Property(e => e.CasAutent)
-                    .HasColumnType("tinyint")
                     .HasColumnName("CAS_AUTENT")
                     .HasComment("Autenticacion");
 
@@ -1494,10 +1625,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("catclient");
 
-                entity.HasComment("Categorias de clientes");
+                entity.HasComment("Categorias de clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CacCodcac)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("CAC_CODCAC")
                     .HasComment("Codigo");
 
@@ -1519,7 +1651,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("ccostos");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.CcoCodcco)
+                    .ValueGeneratedNever()
                     .HasColumnName("CCO_CODCCO")
                     .HasComment("Codigo Centro de costo");
 
@@ -1537,23 +1673,26 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CeCabecera>(entity =>
             {
                 entity.HasKey(e => new { e.CelCodcom, e.CelNrocom })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("ce_cabecera");
 
-                entity.HasComment("Comprobantes electronicos - Cabecera");
+                entity.HasComment("Comprobantes electronicos - Cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CelCodcom)
                     .HasColumnName("CEL_CODCOM")
                     .HasComment("Codigo de comrprobante");
 
                 entity.Property(e => e.CelNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CEL_NROCOM")
                     .HasComment("Nro de comprobante");
 
                 entity.Property(e => e.CelCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CEL_CODCLI");
 
                 entity.Property(e => e.CelConcep)
@@ -1585,37 +1724,37 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha fin abono p/ servicio");
 
                 entity.Property(e => e.CelImpcon)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CEL_IMPCON")
                     .HasComment("Importe Neto No gravado");
 
                 entity.Property(e => e.CelImpexe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CEL_IMPEXE")
                     .HasComment("Importe exento");
 
                 entity.Property(e => e.CelImpiva)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CEL_IMPIVA")
                     .HasComment("Importe IVA");
 
                 entity.Property(e => e.CelImpnet)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CEL_IMPNET")
                     .HasComment("Importe Neto gravado");
 
                 entity.Property(e => e.CelImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CEL_IMPTOT")
                     .HasComment("Importe Total");
 
                 entity.Property(e => e.CelImptri)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CEL_IMPTRI")
                     .HasComment("Suma Importes Array de Tributos");
 
                 entity.Property(e => e.CelMoncot)
-                    .HasColumnType("decimal(10,6)")
+                    .HasPrecision(10, 6)
                     .HasColumnName("CEL_MONCOT")
                     .HasComment("Cotización de la moneda 1 para pesos");
 
@@ -1629,17 +1768,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("CEL_NROCAE");
 
                 entity.Property(e => e.CelNrodes)
-                    .HasColumnType("decimal(8,0)")
+                    .HasPrecision(8)
                     .HasColumnName("CEL_NRODES")
                     .HasComment("Nro de Comprobante Desde");
 
                 entity.Property(e => e.CelNrodoc)
-                    .HasColumnType("decimal(11,0)")
+                    .HasPrecision(11)
                     .HasColumnName("CEL_NRODOC")
                     .HasComment("Numero de Documento");
 
                 entity.Property(e => e.CelNrohas)
-                    .HasColumnType("decimal(8,0)")
+                    .HasPrecision(8)
                     .HasColumnName("CEL_NROHAS")
                     .HasComment("Nro Comprobante Hasta");
 
@@ -1648,7 +1787,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("CEL_OBSERV");
 
                 entity.Property(e => e.CelPtovta)
-                    .HasColumnType("decimal(4,0)")
+                    .HasPrecision(4)
                     .HasColumnName("CEL_PTOVTA")
                     .HasComment("Punto de Venta");
 
@@ -1677,18 +1816,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CeCbesAsoc>(entity =>
             {
                 entity.HasKey(e => new { e.CasCodcom, e.CasNrocom, e.CasLinea })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("ce_cbes_asoc");
 
-                entity.HasComment("Comprobantes electronicos - Comprobantes asociados");
+                entity.HasComment("Comprobantes electronicos - Comprobantes asociados")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.CasCodcom, e.CasNrocom }, "fk_ce_cbes_asoc_ce_cabecera1");
 
                 entity.Property(e => e.CasCodcom).HasColumnName("CAS_CODCOM");
 
                 entity.Property(e => e.CasNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CAS_NROCOM");
 
                 entity.Property(e => e.CasLinea)
@@ -1696,12 +1838,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea");
 
                 entity.Property(e => e.CasNrocas)
-                    .HasColumnType("decimal(8,0)")
+                    .HasPrecision(8)
                     .HasColumnName("CAS_NROCAS")
                     .HasComment("Nro comprobante asociado");
 
                 entity.Property(e => e.CasPtovta)
-                    .HasColumnType("decimal(4,0)")
+                    .HasPrecision(4)
                     .HasColumnName("CAS_PTOVTA")
                     .HasComment("Pto de Vta. comp. asociado");
 
@@ -1719,18 +1861,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CeIva>(entity =>
             {
                 entity.HasKey(e => new { e.IvaCodcom, e.IvaNrocom, e.IvaLinea })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("ce_iva");
 
-                entity.HasComment("Comprobantes electronicos - IVA");
+                entity.HasComment("Comprobantes electronicos - IVA")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.IvaCodcom, e.IvaNrocom }, "fk_ce_iva_ce_cabecera1");
 
                 entity.Property(e => e.IvaCodcom).HasColumnName("IVA_CODCOM");
 
                 entity.Property(e => e.IvaNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("IVA_NROCOM");
 
                 entity.Property(e => e.IvaLinea)
@@ -1738,7 +1883,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea");
 
                 entity.Property(e => e.IvaBasimp)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("IVA_BASIMP")
                     .HasComment("Base Imponible ");
 
@@ -1747,7 +1892,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Id Tipo de IVA");
 
                 entity.Property(e => e.IvaImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("IVA_IMPORT")
                     .HasComment("Importe ");
 
@@ -1765,10 +1910,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("ce_tique_acceso");
 
-                entity.HasComment("Factura Electronica - Tique de Acceso");
+                entity.HasComment("Factura Electronica - Tique de Acceso")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CetPrefij)
-                    .HasColumnType("decimal(4,0)")
+                    .HasPrecision(4)
                     .HasColumnName("CET_PREFIJ");
 
                 entity.Property(e => e.CetCerdig)
@@ -1778,6 +1925,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Certificado Digital");
 
                 entity.Property(e => e.CetGrabac)
+                    .HasColumnType("datetime")
                     .HasColumnName("CET_GRABAC")
                     .HasComment("Fecha hora grabacion");
 
@@ -1796,6 +1944,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("'Token recibido'");
 
                 entity.Property(e => e.CetValido)
+                    .HasColumnType("datetime")
                     .HasColumnName("CET_VALIDO")
                     .HasComment("Fecha hora validez");
             });
@@ -1803,18 +1952,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CeTributo>(entity =>
             {
                 entity.HasKey(e => new { e.TriCodcom, e.TriNrocom, e.TriLinea })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("ce_tributos");
 
-                entity.HasComment("Comprobantes electronicos -Tributos");
+                entity.HasComment("Comprobantes electronicos -Tributos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.TriCodcom, e.TriNrocom }, "fk_ce_tributos_ce_cabecera1");
 
                 entity.Property(e => e.TriCodcom).HasColumnName("TRI_CODCOM");
 
                 entity.Property(e => e.TriNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("TRI_NROCOM");
 
                 entity.Property(e => e.TriLinea)
@@ -1822,12 +1974,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea");
 
                 entity.Property(e => e.TriAlicuo)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("TRI_ALICUO")
                     .HasComment("Alicuta del tributo");
 
                 entity.Property(e => e.TriBasimp)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("TRI_BASIMP")
                     .HasComment("Base Imponible p/ tributo");
 
@@ -1841,7 +1993,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Pto de Vta. comp. asociado");
 
                 entity.Property(e => e.TriImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("TRI_IMPORT")
                     .HasComment("Importe del tributo");
 
@@ -1858,6 +2010,9 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasName("PRIMARY");
 
                 entity.ToTable("cheq_emit");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CheIdcheq).HasColumnName("CHE_IDCHEQ");
 
@@ -1899,7 +2054,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de entrega");
 
                 entity.Property(e => e.CheImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CHE_IMPORT")
                     .HasComment("Importe del cheque	");
 
@@ -1918,6 +2073,9 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasName("PRIMARY");
 
                 entity.ToTable("cheqrec");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.ChrNumche, e.ChrCodban, e.ChrCodloc, e.ChrFecemi }, "Index_2")
                     .IsUnique();
@@ -1971,11 +2129,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de entrega");
 
                 entity.Property(e => e.ChrFecrec)
+                    .HasColumnType("datetime")
                     .HasColumnName("CHR_FECREC")
                     .HasComment("Fecha de recepcion");
 
                 entity.Property(e => e.ChrImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CHR_IMPORT")
                     .HasComment("Importe del cheque	");
 
@@ -2005,9 +2164,13 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("chequeras");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.ChqCodbce, "fk_chequeras_banco_idx");
 
                 entity.Property(e => e.ChqCodchq)
+                    .ValueGeneratedNever()
                     .HasColumnName("CHQ_CODCHQ")
                     .HasComment("Codigo de chequera");
 
@@ -2018,12 +2181,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.ChqCodbce).HasColumnName("CHQ_CODBCE");
 
                 entity.Property(e => e.ChqDesnum)
-                    .HasColumnType("decimal(11,0)")
+                    .HasPrecision(11)
                     .HasColumnName("CHQ_DESNUM")
                     .HasComment("Primer numero");
 
                 entity.Property(e => e.ChqHasnum)
-                    .HasColumnType("decimal(11,0)")
+                    .HasPrecision(11)
                     .HasColumnName("CHQ_HASNUM")
                     .HasComment("ultimo numero");
 
@@ -2033,7 +2196,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Tipo de cheque: diferido, al dia");
 
                 entity.Property(e => e.ChqUltnum)
-                    .HasColumnType("decimal(11,0)")
+                    .HasPrecision(11)
                     .HasColumnName("CHQ_ULTNUM")
                     .HasComment("ultimo cheque emitido");
 
@@ -2047,22 +2210,25 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ClienContac>(entity =>
             {
                 entity.HasKey(e => new { e.CycCodcli, e.CycCodcon })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("clien_contac");
 
-                entity.HasComment("Clientes y contactos");
+                entity.HasComment("Clientes y contactos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CycCodcli, "fk_clien_contac_clientes1");
 
                 entity.HasIndex(e => e.CycCodcon, "fk_table1_contactos1");
 
                 entity.Property(e => e.CycCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CYC_CODCLI");
 
                 entity.Property(e => e.CycCodcon)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CYC_CODCON")
                     .HasComment("Codigo de contacto");
 
@@ -2085,6 +2251,9 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasName("PRIMARY");
 
                 entity.ToTable("clientes");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.CliCodciv, e.CliCuit }, "Ak_CIvaCuit")
                     .IsUnique();
@@ -2110,7 +2279,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.HasIndex(e => e.CliCodprv, "fk_proveedores_provincia1");
 
                 entity.Property(e => e.CliCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CLI_CODCLI");
 
                 entity.Property(e => e.CliBlofac)
@@ -2118,7 +2287,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("bloquea facturacion por deuda");
 
                 entity.Property(e => e.CliCodcac)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("CLI_CODCAC")
                     .HasComment("Codigo categoria cliente");
 
@@ -2147,7 +2315,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de lista de precios");
 
                 entity.Property(e => e.CliCodloc)
-                    .HasColumnType("decimal(5,0)")
+                    .HasPrecision(5)
                     .HasColumnName("CLI_CODLOC");
 
                 entity.Property(e => e.CliCodmon)
@@ -2160,16 +2328,14 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Código Postal");
 
                 entity.Property(e => e.CliCodprv)
-                    .HasColumnType("decimal(3,0)")
+                    .HasPrecision(3)
                     .HasColumnName("CLI_CODPRV");
 
                 entity.Property(e => e.CliCodtdo)
                     .HasColumnName("CLI_CODTDO")
                     .HasComment("Id. Tipo Documento");
 
-                entity.Property(e => e.CliCodtra)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("CLI_CODTRA");
+                entity.Property(e => e.CliCodtra).HasColumnName("CLI_CODTRA");
 
                 entity.Property(e => e.CliCodven)
                     .HasColumnName("CLI_CODVEN")
@@ -2235,7 +2401,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("nro. ingresos brutos");
 
                 entity.Property(e => e.CliLimcre)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CLI_LIMCRE")
                     .HasComment("Limite de credito");
 
@@ -2245,7 +2411,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("mail empresa");
 
                 entity.Property(e => e.CliObserv)
-                    .HasColumnType("longtext")
                     .HasColumnName("CLI_OBSERV")
                     .HasComment("Observaciones");
 
@@ -2254,7 +2419,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Habilitado para imprimir remitos..(Si CTACTE esta habilitada) 0=NO 1=SI");
 
                 entity.Property(e => e.CliSaldo)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CLI_SALDO")
                     .HasComment("saldo ");
 
@@ -2337,6 +2502,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("clientes_vie");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Condiiva)
                     .HasMaxLength(11)
                     .HasColumnName("CONDIIVA");
@@ -2349,9 +2517,13 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasMaxLength(30)
                     .HasColumnName("DOMICILI");
 
-                entity.Property(e => e.Fechaalt).HasColumnName("FECHAALT");
+                entity.Property(e => e.Fechaalt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FECHAALT");
 
-                entity.Property(e => e.Fechault).HasColumnName("FECHAULT");
+                entity.Property(e => e.Fechault)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FECHAULT");
 
                 entity.Property(e => e.Incobra).HasColumnName("INCOBRA");
 
@@ -2421,14 +2593,16 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("cobradores");
 
-                entity.HasComment("Cobradores");
+                entity.HasComment("Cobradores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CobCodcob)
                     .HasColumnName("COB_CODCOB")
                     .HasComment("Codigo de comprador");
 
                 entity.Property(e => e.CobComisi)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("COB_COMISI")
                     .HasComment("Porcent. comision");
 
@@ -2448,12 +2622,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de ingreso");
 
                 entity.Property(e => e.CobNlegaj)
-                    .HasColumnType("decimal(10,0)")
+                    .HasPrecision(10)
                     .HasColumnName("COB_NLEGAJ")
                     .HasComment("Nro. de legajo");
 
                 entity.Property(e => e.CobNtarje)
-                    .HasColumnType("decimal(10,0)")
+                    .HasPrecision(10)
                     .HasColumnName("COB_NTARJE")
                     .HasComment("Nro. de tarjeta");
 
@@ -2470,7 +2644,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("cobranzas_clientes");
 
-                entity.HasComment("Novedades para clientes");
+                entity.HasComment("Novedades para clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CobCodcli, "fk_novedades_cli_clientes1");
 
@@ -2479,7 +2655,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Id cobranza");
 
                 entity.Property(e => e.CobCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("COB_CODCLI")
                     .HasComment("Codigo de cliente");
 
@@ -2524,10 +2700,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("comp_config_no");
 
-                entity.HasComment("Configuración de comprobantes");
+                entity.HasComment("Configuración de comprobantes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CocCodcom)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("COC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
@@ -2542,7 +2719,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripcion de comprobante");
 
                 entity.Property(e => e.CocMaxlin)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("COC_MAXLIN")
                     .HasComment("Maximo de lineas");
 
@@ -2561,11 +2737,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ComprobNumero>(entity =>
             {
                 entity.HasKey(e => new { e.CynCodcom, e.CynPrefij })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("comprob_numeros");
 
-                entity.HasComment("Comprobantes y Numeros	");
+                entity.HasComment("Comprobantes y Numeros	")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CynCodcom, "fk_comprob_numeros_comprobantes1");
 
@@ -2582,7 +2761,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Grupo de actualización");
 
                 entity.Property(e => e.CynNumero)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CYN_NUMERO")
                     .HasComment("Numero");
 
@@ -2605,9 +2784,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("comprobantes");
 
-                entity.HasComment("Comprobantes y Numeros	");
+                entity.HasComment("Comprobantes y Numeros	")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ComCodcom)
+                    .ValueGeneratedNever()
                     .HasColumnName("COM_CODCOM")
                     .HasComment("Codigo");
 
@@ -2663,7 +2845,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Maximo de lineas");
 
                 entity.Property(e => e.ComNumero)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("COM_NUMERO")
                     .HasComment("Numero");
 
@@ -2680,9 +2862,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("conceptos");
 
-                entity.HasComment("Conceptos de entrada-salida");
+                entity.HasComment("Conceptos de entrada-salida")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CoeCodcop)
+                    .ValueGeneratedNever()
                     .HasColumnName("COE_CODCOP")
                     .HasComment("Codigo de concepto");
 
@@ -2711,12 +2896,15 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("condiva");
 
-                entity.HasComment("Condicion frente al iva");
+                entity.HasComment("Condicion frente al iva")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CoiAbrevi, "COI_ABREVI_UNIQUE")
                     .IsUnique();
 
                 entity.Property(e => e.CoiCodciv)
+                    .ValueGeneratedNever()
                     .HasColumnName("COI_CODCIV")
                     .HasComment("Codigo condicion de iva");
 
@@ -2748,7 +2936,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("condpago");
 
-                entity.HasComment("Condiciones de venta");
+                entity.HasComment("Condiciones de venta")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CopCodlis, "fk_condpago_listaprecios_idx");
 
@@ -2782,17 +2972,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("dias ultimo vencimiento");
 
                 entity.Property(e => e.CopDto1)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("COP_DTO1")
                     .HasComment("descuento 1");
 
                 entity.Property(e => e.CopDto2)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("COP_DTO2")
                     .HasComment("descuento 2");
 
                 entity.Property(e => e.CopDto3)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("COP_DTO3")
                     .HasComment("descuento 3");
 
@@ -2806,7 +2996,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Porcentaje de participación de c/ cuota");
 
                 entity.Property(e => e.CopRec1)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("COP_REC1")
                     .HasComment("recargo 1");
 
@@ -2823,9 +3013,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("condpago_ant");
 
-                entity.HasComment("Condiciones de venta");
+                entity.HasComment("Condiciones de venta")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Codcpgo)
+                    .ValueGeneratedNever()
                     .HasColumnName("CODCPGO")
                     .HasComment("Codigo");
 
@@ -2878,22 +3071,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("dias 10mo. venc");
 
                 entity.Property(e => e.Dto1)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("DTO1")
                     .HasComment("descuento 1");
 
                 entity.Property(e => e.Dto2)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("DTO2")
                     .HasComment("descuento 2");
 
                 entity.Property(e => e.Dto3)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("DTO3")
                     .HasComment("descuento 3");
 
                 entity.Property(e => e.Rec1)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("REC1")
                     .HasComment("recargo 1");
             });
@@ -2905,10 +3098,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("contactos");
 
-                entity.HasComment("Clientes");
+                entity.HasComment("Clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ConCodcon)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CON_CODCON")
                     .HasComment("Codigo de contacto");
 
@@ -2917,9 +3112,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("CON_CARGO")
                     .HasComment("Cargo");
 
-                entity.Property(e => e.ConEnviaf)
-                    .HasColumnType("tinyint")
-                    .HasColumnName("CON_ENVIAF");
+                entity.Property(e => e.ConEnviaf).HasColumnName("CON_ENVIAF");
 
                 entity.Property(e => e.ConFax)
                     .HasMaxLength(20)
@@ -2978,9 +3171,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("contr_fiscal");
 
-                entity.HasComment("Parametros controlador Fiscal");
+                entity.HasComment("Parametros controlador Fiscal")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CofCodcon)
+                    .ValueGeneratedNever()
                     .HasColumnName("COF_CODCON")
                     .HasComment("Codigo de controlador");
 
@@ -3014,9 +3210,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("coperacion");
 
-                entity.HasComment("Conceptos de operacion");
+                entity.HasComment("Conceptos de operacion")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CoeCodcop)
+                    .ValueGeneratedNever()
                     .HasColumnName("COE_CODCOP")
                     .HasComment("Codigo de concepto");
 
@@ -3036,13 +3235,16 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("ctasbanc");
 
-                entity.HasComment("Cuentas bancarias de la empresa");
+                entity.HasComment("Cuentas bancarias de la empresa")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CbaCodban, "fk_ctasbanc_bancos_idx");
 
                 entity.HasIndex(e => e.CbaCodmon, "fk_ctasbanc_monedas_idx");
 
                 entity.Property(e => e.CbaCodctb)
+                    .ValueGeneratedNever()
                     .HasColumnName("CBA_CODCTB")
                     .HasComment("Codigo de cuenta");
 
@@ -3069,7 +3271,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nombre-denominacion cta");
 
                 entity.Property(e => e.CbaDescub)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CBA_DESCUB")
                     .HasComment("Descubierto");
 
@@ -3084,7 +3286,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de cuenta");
 
                 entity.Property(e => e.CbaObserv)
-                    .HasColumnType("longtext")
                     .HasColumnName("CBA_OBSERV")
                     .HasComment("Observaciones");
 
@@ -3116,11 +3317,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CtasbancPro>(entity =>
             {
                 entity.HasKey(e => new { e.CbpCodpro, e.CbpNrocta })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("ctasbanc_pro");
 
-                entity.HasComment("Cuentas Bancarias Proveedores");
+                entity.HasComment("Cuentas Bancarias Proveedores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CbpCodmon, "fk_ctasbanc_pro_monedas_idx");
 
@@ -3164,37 +3368,34 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Ctasctesc>(entity =>
             {
                 entity.HasKey(e => new { e.CccCodcom, e.CccNrocom, e.CccCodpro })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("ctasctesc");
 
-                entity.HasComment("Ctas. Ctes. proveedores  - cabecera");
+                entity.HasComment("Ctas. Ctes. proveedores  - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CccCodcob, "fk_ctasctesc_cobradores_idx");
 
                 entity.HasIndex(e => e.CccCodcop, "fk_ctasctesc_condpago_idx");
 
-                entity.HasIndex(e => e.CccCodcop, "fk_ctasctesc_condpago_idx1");
-
                 entity.HasIndex(e => e.CccCodlis, "fk_ctasctesc_listapre_idx");
 
-                entity.HasIndex(e => e.CccCodlis, "fk_ctasctesc_listapre_idx1");
-
                 entity.HasIndex(e => e.CccCodmon, "fk_ctasctesc_monedas_idx");
-
-                entity.HasIndex(e => e.CccCodmon, "fk_ctasctesc_monedas_idx1");
 
                 entity.Property(e => e.CccCodcom)
                     .HasColumnName("CCC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.CccNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CCC_NROCOM")
                     .HasComment("Numero de Comprobante");
 
                 entity.Property(e => e.CccCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CCC_CODPRO")
                     .HasComment("Cod. de proveedor");
 
@@ -3235,17 +3436,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha ultimo vencimiento");
 
                 entity.Property(e => e.CccImpdeb)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCC_IMPDEB")
                     .HasComment("Importe DEBE");
 
                 entity.Property(e => e.CccImphab)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCC_IMPHAB")
                     .HasComment("Importe HABER");
 
                 entity.Property(e => e.CccImpsal)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCC_IMPSAL")
                     .HasComment("Saldo del comprobante");
 
@@ -3270,22 +3471,25 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CtasctescDet>(entity =>
             {
                 entity.HasKey(e => new { e.CdcCodcom, e.CdcNrocom, e.CdcCodpro, e.CdcNrocuo })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
 
                 entity.ToTable("ctasctesc_det");
 
-                entity.HasComment("Fac_NC_ND proveedores  - detalle");
+                entity.HasComment("Fac_NC_ND proveedores  - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.CdcCodcom, e.CdcNrocom, e.CdcCodpro }, "fk_ctasctesc_det_ctasctesc1");
 
                 entity.Property(e => e.CdcCodcom).HasColumnName("CDC_CODCOM");
 
                 entity.Property(e => e.CdcNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CDC_NROCOM");
 
                 entity.Property(e => e.CdcCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CDC_CODPRO");
 
                 entity.Property(e => e.CdcNrocuo)
@@ -3307,17 +3511,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha vencimiento cuota");
 
                 entity.Property(e => e.CdcImpcuo)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CDC_IMPCUO")
                     .HasComment("Importe CUOTA");
 
                 entity.Property(e => e.CdcImpsal)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CDC_IMPSAL")
                     .HasComment("Importe saldo de la cuota");
 
                 entity.Property(e => e.CdcNrocoa)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CDC_NROCOA")
                     .HasComment("Nro comprobante que aplica");
 
@@ -3340,16 +3544,19 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Ctasctesv>(entity =>
             {
                 entity.HasKey(e => new { e.CcvNrocom, e.CcvCodcom })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("ctasctesv");
 
-                entity.HasComment("Fac_NC_ND de venta  - cabecera");
+                entity.HasComment("Fac_NC_ND de venta  - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.CcvCodcob, "fk_ctasctesv_cobradores_idx");
 
                 entity.Property(e => e.CcvNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CCV_NROCOM")
                     .HasComment("Numero de Comprobante");
 
@@ -3358,7 +3565,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.CcvCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("CCV_CODCLI")
                     .HasComment("Cod. de cliente");
 
@@ -3399,17 +3606,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha ultimo vencimiento");
 
                 entity.Property(e => e.CcvImpdeb)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCV_IMPDEB")
                     .HasComment("Importe DEBE");
 
                 entity.Property(e => e.CcvImphab)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCV_IMPHAB")
                     .HasComment("Importe HABER");
 
                 entity.Property(e => e.CcvImpsal)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCV_IMPSAL")
                     .HasComment("Saldo del comprobante");
 
@@ -3424,7 +3631,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.CcvSalcli)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CCV_SALCLI")
                     .HasComment("Saldo del cliente luego de la confección del recibo.");
             });
@@ -3432,11 +3639,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<CtasctesvDet>(entity =>
             {
                 entity.HasKey(e => new { e.CdvCodcom, e.CdvNrocom, e.CdvNrocuo })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("ctasctesv_det");
 
-                entity.HasComment("Fac_NC_ND de venta  - cabecera");
+                entity.HasComment("Fac_NC_ND de venta  - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.CdvNrocom, e.CdvCodcom }, "CtasCtesV_FK");
 
@@ -3445,7 +3655,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.CdvNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CDV_NROCOM")
                     .HasComment("Nro de Comprobante");
 
@@ -3468,17 +3678,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha vencimiento cuota");
 
                 entity.Property(e => e.CdvImpcuo)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CDV_IMPCUO")
                     .HasComment("Importe CUOTA");
 
                 entity.Property(e => e.CdvImpsal)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("CDV_IMPSAL")
                     .HasComment("Importe saldo de la cuota");
 
                 entity.Property(e => e.CdvNrocoa)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("CDV_NROCOA")
                     .HasComment("Nro comprobante que aplica");
 
@@ -3505,7 +3715,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("depbanc_cli");
 
-                entity.HasComment("Depositos y tansferencias  de clientes");
+                entity.HasComment("Depositos y tansferencias  de clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.DecCodcli, "fk_decbanc_cli_clientes_idx");
 
@@ -3514,7 +3726,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Id Movimiento (autoincremental)");
 
                 entity.Property(e => e.DecCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("DEC_CODCLI")
                     .HasComment("Codigo de cliente");
 
@@ -3533,7 +3745,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha deposito");
 
                 entity.Property(e => e.DecImpdep)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("DEC_IMPDEP")
                     .HasComment("Importe depositado");
 
@@ -3554,7 +3766,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("depbanc_pro");
 
-                entity.HasComment("Depositos y tansferencias a proveedores");
+                entity.HasComment("Depositos y tansferencias a proveedores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.DepCodpro, "fk_depbanc_pro_proveedores_idx");
 
@@ -3581,7 +3795,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha deposito");
 
                 entity.Property(e => e.DepImpdep)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("DEP_IMPDEP")
                     .HasComment("Importe depositado");
 
@@ -3607,9 +3821,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("depositos");
 
-                entity.HasComment("Depósitos");
+                entity.HasComment("Depósitos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DepCoddep)
+                    .ValueGeneratedNever()
                     .HasColumnName("DEP_CODDEP")
                     .HasComment("Codigo de depósito");
 
@@ -3626,9 +3843,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("devoluc_mot");
 
-                entity.HasComment("Motivos de devolución");
+                entity.HasComment("Motivos de devolución")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DemCoddev)
+                    .ValueGeneratedNever()
                     .HasColumnName("DEM_CODDEV")
                     .HasComment("Codigo motivo devolucion");
 
@@ -3645,16 +3865,19 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("devoluciones");
 
-                entity.HasComment("material devuelto");
+                entity.HasComment("material devuelto")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.DevCoddev, "fk_devoluciones_devoluc_mot1");
 
                 entity.Property(e => e.DevNrodev)
+                    .ValueGeneratedNever()
                     .HasColumnName("DEV_NRODEV")
                     .HasComment("Numero de devolución");
 
                 entity.Property(e => e.DevCandev)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("DEV_CANDEV")
                     .HasComment("Cantidad devuelta");
 
@@ -3704,9 +3927,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("divisiones");
 
-                entity.HasComment("Divisiones de la empresa");
+                entity.HasComment("Divisiones de la empresa")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DivCoddiv)
+                    .ValueGeneratedNever()
                     .HasColumnName("DIV_CODDIV")
                     .HasComment("Codigo de division");
 
@@ -3728,7 +3954,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("empresa");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.EmpCodemp)
+                    .ValueGeneratedNever()
                     .HasColumnName("EMP_CODEMP")
                     .HasComment("Id empresa");
 
@@ -3809,7 +4039,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("equivalencias");
 
-                entity.HasComment("Articulos equivalentes");
+                entity.HasComment("Articulos equivalentes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EquCodart)
                     .HasMaxLength(15)
@@ -3839,7 +4071,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("errores");
 
-                entity.HasComment("Log de errores");
+                entity.HasComment("Log de errores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.ErrId, "XPKDI_ERR_M")
                     .IsUnique();
@@ -3853,12 +4087,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("ERR_APLICA");
 
                 entity.Property(e => e.ErrCodigo)
-                    .HasColumnType("decimal(15,0)")
+                    .HasPrecision(15)
                     .HasColumnName("ERR_CODIGO");
 
                 entity.Property(e => e.ErrDescri)
                     .HasMaxLength(255)
                     .HasColumnName("ERR_DESCRI");
+
+                entity.Property(e => e.ErrFechor)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("ERR_FECHOR")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.ErrFormul)
                     .HasMaxLength(40)
@@ -3876,11 +4115,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Facturasc>(entity =>
             {
                 entity.HasKey(e => new { e.FccCodcom, e.FccNrofac, e.FccCodpro, e.FccCoddep, e.FccCodtra })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0, 0 });
 
                 entity.ToTable("facturasc");
 
-                entity.HasComment("Fac_NC_ND de compra - cabecera");
+                entity.HasComment("Fac_NC_ND de compra - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.FccCodcop, "fk_facturasc_conceptos1");
 
@@ -3895,12 +4137,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.FccNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCC_NROFAC")
                     .HasComment("Numero de Comrobante");
 
                 entity.Property(e => e.FccCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("FCC_CODPRO")
                     .HasComment("Cod. de proveedor");
 
@@ -3913,12 +4155,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de transportista");
 
                 entity.Property(e => e.FccBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_BONIF1")
                     .HasComment("Bonificacion 1");
 
                 entity.Property(e => e.FccBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_BONIF2")
                     .HasComment("bonificacion 2");
 
@@ -3947,12 +4189,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("id usuario");
 
                 entity.Property(e => e.FccDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_DTOGEN")
                     .HasComment("Importe dto. gral comprobante");
 
                 entity.Property(e => e.FccDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("FCC_DTOGEP")
                     .HasComment("Porcentaje dto. gral.");
 
@@ -3972,57 +4214,57 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de registracion para libro de iva... (tomar mes  y ano). Guardar dia 1.");
 
                 entity.Property(e => e.FccImpiin)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPIIN")
                     .HasComment("Impuestos Internos");
 
                 entity.Property(e => e.FccImpiva)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPIVA")
                     .HasComment("Importe IVA ampliado");
 
                 entity.Property(e => e.FccImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.FccImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.FccImpnea)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPNEA")
                     .HasComment("Importe Neto IVA ampliado");
 
                 entity.Property(e => e.FccImpneg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPNEG")
                     .HasComment("Importe neto iva general");
 
                 entity.Property(e => e.FccImpner)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPNER")
                     .HasComment("Importe Neto IVA reducido");
 
                 entity.Property(e => e.FccImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPORT")
                     .HasComment("Importe antes de bonificaciones SIN IVA SIEMPRE");
 
                 entity.Property(e => e.FccImpper)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPPER")
                     .HasComment("Percepciones");
 
                 entity.Property(e => e.FccImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPRET")
                     .HasComment("Retenciones");
 
                 entity.Property(e => e.FccImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FCC_IMPTOT")
                     .HasComment("Importe total");
 
@@ -4046,17 +4288,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro. de CAI");
 
                 entity.Property(e => e.FccNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCC_NROPED")
                     .HasComment("Nro de pedido");
 
                 entity.Property(e => e.FccNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCC_NROPRE")
                     .HasComment("Nro de presupuesto");
 
                 entity.Property(e => e.FccNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCC_NROREM")
                     .HasComment("Nro de factura");
 
@@ -4070,7 +4312,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Orden en Listado p/Archivo");
 
                 entity.Property(e => e.FccValmon)
-                    .HasColumnType("decimal(6,3)")
+                    .HasPrecision(6, 3)
                     .HasColumnName("FCC_VALMON")
                     .HasComment("Valor de moneda original");
 
@@ -4106,11 +4348,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<FacturascDet>(entity =>
             {
                 entity.HasKey(e => new { e.FcdCodcom, e.FcdNrofac, e.FcdCodpro, e.FcdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
 
                 entity.ToTable("facturasc_det");
 
-                entity.HasComment("FAC_NC_ND de vta.  - detalle");
+                entity.HasComment("FAC_NC_ND de vta.  - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.FcdCodpro, "fk_facturasc_de_tproveedores_idx");
 
@@ -4119,7 +4364,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.FcdCodcom).HasColumnName("FCD_CODCOM");
 
                 entity.Property(e => e.FcdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCD_NROFAC");
 
                 entity.Property(e => e.FcdCodpro).HasColumnName("FCD_CODPRO");
@@ -4129,17 +4374,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.FcdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_BONIF1")
                     .HasComment("% Bonificacion 1");
 
                 entity.Property(e => e.FcdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_BONIF2")
                     .HasComment("% Bonificacion 2");
 
                 entity.Property(e => e.FcdCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_CANTID")
                     .HasComment("Cantidad ");
 
@@ -4164,22 +4409,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Estado de la linea, ABIERTO,CERRADO,ANULADO");
 
                 entity.Property(e => e.FcdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.FcdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.FcdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.FcdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_IMPTOT")
                     .HasComment("Importe total unitario");
 
@@ -4192,17 +4437,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro. de linea remito");
 
                 entity.Property(e => e.FcdNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCD_NROPED")
                     .HasComment("Nro. de pedido");
 
                 entity.Property(e => e.FcdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCD_NROPRE")
                     .HasComment("Nro de presupuesto");
 
                 entity.Property(e => e.FcdNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FCD_NROREM")
                     .HasComment("Nro. de remito");
 
@@ -4212,7 +4457,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.FcdPrecio)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FCD_PRECIO")
                     .HasComment("Precio unitario");
 
@@ -4222,7 +4467,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.FcdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("FCD_VALIVA")
                     .HasComment("Alicuota IVA");
             });
@@ -4230,18 +4475,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Facturasv>(entity =>
             {
                 entity.HasKey(e => new { e.FvcCodcom, e.FvcNrofac, e.FvcCoddep, e.FvcCodven, e.FvcCodtra })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0, 0 });
 
                 entity.ToTable("facturasv");
 
-                entity.HasComment("Fac_NC_ND de venta  - cabecera");
+                entity.HasComment("Fac_NC_ND de venta  - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FvcCodcom)
                     .HasColumnName("FVC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.FvcNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVC_NROFAC")
                     .HasComment("Numero de Comrobante");
 
@@ -4258,22 +4506,21 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de transportista");
 
                 entity.Property(e => e.FvcAcopio)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("FVC_ACOPIO")
                     .HasComment("Factura de Acopio: 0=NO, 1=Acopio de Dinero, 2:Acopio de mercaderías.");
 
                 entity.Property(e => e.FvcBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_BONIF1")
                     .HasComment("Bonificacion 1");
 
                 entity.Property(e => e.FvcBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_BONIF2")
                     .HasComment("bonificacion 2");
 
                 entity.Property(e => e.FvcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("FVC_CODCLI")
                     .HasComment("Cod. de cliente");
 
@@ -4294,12 +4541,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de Usuario");
 
                 entity.Property(e => e.FvcDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_DTOGEN")
                     .HasComment("Importe dto. gral comprobante");
 
                 entity.Property(e => e.FvcDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("FVC_DTOGEP")
                     .HasComment("Porcentaje dto. gral.");
 
@@ -4314,37 +4561,37 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de comprobante");
 
                 entity.Property(e => e.FvcImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.FvcImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.FvcImpneg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPNEG")
                     .HasComment("Importe neto iva GRAL");
 
                 entity.Property(e => e.FvcImpner)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPNER")
                     .HasComment("Importe neto iva REDUCIDO");
 
                 entity.Property(e => e.FvcImpnog)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPNOG")
                     .HasComment("Importe No Gravado");
 
                 entity.Property(e => e.FvcImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPORT")
                     .HasComment("Importe antes de bonificaciones");
 
                 entity.Property(e => e.FvcImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("FVC_IMPTOT")
                     .HasComment("Importe total");
 
@@ -4368,17 +4615,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro orden de compra");
 
                 entity.Property(e => e.FvcNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVC_NROPED")
                     .HasComment("Nro de pedido");
 
                 entity.Property(e => e.FvcNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVC_NROPRE")
                     .HasComment("Nro de presupuesto");
 
                 entity.Property(e => e.FvcNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVC_NROREM")
                     .HasComment("Nro de factura");
 
@@ -4391,11 +4638,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<FacturasvDet>(entity =>
             {
                 entity.HasKey(e => new { e.FvdCodcom, e.FvdNrofac, e.FvdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("facturasv_det");
 
-                entity.HasComment("FAC_NC_ND de vta.  - detalle");
+                entity.HasComment("FAC_NC_ND de vta.  - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.FvdCodcom, e.FvdNrofac }, "fk_facturasv_det_facturasv1");
 
@@ -4404,7 +4654,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.FvdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVD_NROFAC")
                     .HasComment("Nro de factura");
 
@@ -4413,17 +4663,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.FvdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_BONIF1")
                     .HasComment("% Bonificacion 1");
 
                 entity.Property(e => e.FvdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_BONIF2")
                     .HasComment("% Bonificacion 2");
 
                 entity.Property(e => e.FvdCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_CANTID")
                     .HasComment("Cantidad ");
 
@@ -4443,32 +4693,31 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Estado de la linea, ABIERTO,CERRADO,ANULADO");
 
                 entity.Property(e => e.FvdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.FvdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.FvdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.FvdImpnog)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_IMPNOG")
                     .HasComment("Importe No Gravado");
 
                 entity.Property(e => e.FvdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_IMPTOT")
                     .HasComment("Importe total unitario");
 
                 entity.Property(e => e.FvdLinaco)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("FVD_LINACO")
                     .HasComment("Linea del acondicionamiento");
 
@@ -4481,17 +4730,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro. de linea remito");
 
                 entity.Property(e => e.FvdNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVD_NROPED")
                     .HasComment("Nro. de pedido");
 
                 entity.Property(e => e.FvdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVD_NROPRE")
                     .HasComment("Nro de presupuesto");
 
                 entity.Property(e => e.FvdNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("FVD_NROREM")
                     .HasComment("Nro. de remito");
 
@@ -4501,7 +4750,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.FvdPrecio)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("FVD_PRECIO")
                     .HasComment("Precio unitario");
 
@@ -4511,7 +4760,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.FvdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("FVD_VALIVA")
                     .HasComment("Alicuota de IVA");
             });
@@ -4523,9 +4772,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("familias");
 
-                entity.HasComment("Familias p/art. desplegables");
+                entity.HasComment("Familias p/art. desplegables")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FamCodfam)
+                    .ValueGeneratedNever()
                     .HasColumnName("FAM_CODFAM")
                     .HasComment("Codigo de grupo");
 
@@ -4543,11 +4795,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<FamiliasDet>(entity =>
             {
                 entity.HasKey(e => new { e.FadCodfam, e.FadCoddet })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("familias_det");
 
-                entity.HasComment("Detalle de familias");
+                entity.HasComment("Detalle de familias")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.FadCodfam, "fk_grupos_det_grupos1_idx");
 
@@ -4590,11 +4845,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ImprComp>(entity =>
             {
                 entity.HasKey(e => new { e.IycCodpue, e.IycCodcom })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("impr_comp");
 
-                entity.HasComment("Impresion de comprobantes");
+                entity.HasComment("Impresion de comprobantes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.IycCodcom, "fk_impresion_comprobantes1");
 
@@ -4642,9 +4900,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("impresoras_no");
 
-                entity.HasComment("Impresora y Puestos");
+                entity.HasComment("Impresora y Puestos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ImpCodimp)
+                    .ValueGeneratedNever()
                     .HasColumnName("IMP_CODIMP")
                     .HasComment("Codigo de impresora");
 
@@ -4666,7 +4927,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("iva");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.IvaCodiva)
+                    .ValueGeneratedNever()
                     .HasColumnName("IVA_CODIVA")
                     .HasComment("Id iva");
 
@@ -4676,7 +4941,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripción");
 
                 entity.Property(e => e.IvaValiva)
-                    .HasColumnType("decimal(4,2)")
+                    .HasPrecision(4, 2)
                     .HasColumnName("IVA_VALIVA")
                     .HasComment("Porcentaje iva");
             });
@@ -4688,7 +4953,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("lineas");
 
-                entity.HasComment("Lineas de artículos");
+                entity.HasComment("Lineas de artículos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LinCodlin)
                     .HasMaxLength(4)
@@ -4706,7 +4973,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripción");
 
                 entity.Property(e => e.LinDivweb)
-                    .HasColumnType("smallint unsigned")
                     .HasColumnName("LIN_DIVWEB")
                     .HasComment("Division Web 1 Electricidad - 2 Iluminacion");
 
@@ -4723,11 +4989,14 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("listapre");
 
-                entity.HasComment("Listas de precios");
+                entity.HasComment("Listas de precios")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.LipCodmon, "fk_precios_c_monedas1");
 
                 entity.Property(e => e.LipCodlis)
+                    .ValueGeneratedNever()
                     .HasColumnName("LIP_CODLIS")
                     .HasComment("Codigo de lista");
 
@@ -4759,7 +5028,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nombre");
 
                 entity.Property(e => e.LipVigente)
-                    .HasColumnType("tinyint")
                     .HasColumnName("LIP_VIGENTE")
                     .HasComment("Vigente");
 
@@ -4773,11 +5041,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Lisyreg>(entity =>
             {
                 entity.HasKey(e => new { e.LyrCodlis, e.LyrCodreg })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("lisyreg");
 
-                entity.HasComment("Listas y Reglas de precios (relacion)");
+                entity.HasComment("Listas y Reglas de precios (relacion)")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.LyrCodreg, "fk_LISYREG_REGLAPRE1");
 
@@ -4805,11 +5076,14 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("localidades");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.LocCodloc, "localid_pk")
                     .IsUnique();
 
                 entity.Property(e => e.LocCodloc)
-                    .HasColumnType("decimal(5,0)")
+                    .HasPrecision(5)
                     .HasColumnName("LOC_CODLOC");
 
                 entity.Property(e => e.LocCodpos)
@@ -4818,7 +5092,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("LOC_CODPOS");
 
                 entity.Property(e => e.LocCodprv)
-                    .HasColumnType("decimal(3,0)")
+                    .HasPrecision(3)
                     .HasColumnName("LOC_CODPRV");
 
                 entity.Property(e => e.LocDescri)
@@ -4838,7 +5112,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("marcas");
 
-                entity.HasComment("Marcas");
+                entity.HasComment("Marcas")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.MarIdweb, "IdWeb")
                     .IsUnique();
@@ -4859,7 +5135,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripción");
 
                 entity.Property(e => e.MarIdweb)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("MAR_IDWEB")
                     .HasComment("Id Web");
 
@@ -4876,9 +5151,13 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("mediopago");
 
-                entity.HasComment("Medios de pago");
+                entity.HasComment("Medios de pago")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.MpaCodmpa).HasColumnName("MPA_CODMPA");
+                entity.Property(e => e.MpaCodmpa)
+                    .ValueGeneratedNever()
+                    .HasColumnName("MPA_CODMPA");
 
                 entity.Property(e => e.MpaAbrevi)
                     .HasMaxLength(8)
@@ -4910,6 +5189,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("menu");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.MenCodmen)
                     .HasColumnName("MEN_CODMEN")
                     .HasComment("Id Menu");
@@ -4929,7 +5211,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nombre Menu");
 
                 entity.Property(e => e.MenObserv)
-                    .HasColumnType("longtext")
                     .HasColumnName("MEN_OBSERV")
                     .HasComment("Observaciones");
 
@@ -4959,6 +5240,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("menu_bak");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.MenCodmen)
                     .HasColumnName("MEN_CODMEN")
                     .HasComment("Id Menu");
@@ -4978,7 +5262,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nombre Menu");
 
                 entity.Property(e => e.MenObserv)
-                    .HasColumnType("longtext")
                     .HasColumnName("MEN_OBSERV")
                     .HasComment("Observaciones");
 
@@ -5008,9 +5291,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("monedas");
 
-                entity.HasComment("Monedas");
+                entity.HasComment("Monedas")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.MonCodmon)
+                    .ValueGeneratedNever()
                     .HasColumnName("MON_CODMON")
                     .HasComment("Codigo de moneda");
 
@@ -5030,7 +5316,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Signo de la moneda");
 
                 entity.Property(e => e.MonValmon)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("MON_VALMON")
                     .HasComment("Valor");
             });
@@ -5039,7 +5325,9 @@ namespace ProyectoFinalElectricidadSeret.Data
             {
                 entity.ToTable("monedas_h");
 
-                entity.HasComment("Historico de monedas");
+                entity.HasComment("Historico de monedas")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
@@ -5054,6 +5342,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("MON_CODMON")
                     .HasComment("Codigo de moneda");
 
+                entity.Property(e => e.MonFecope)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("MON_FECOPE")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("Fecha de la operación");
+
                 entity.Property(e => e.MonNomusu)
                     .HasMaxLength(15)
                     .HasColumnName("MON_NOMUSU")
@@ -5065,7 +5359,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Tipo de operación");
 
                 entity.Property(e => e.MonValmon)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("MON_VALMON")
                     .HasComment("Valor");
             });
@@ -5076,6 +5370,9 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasName("PRIMARY");
 
                 entity.ToTable("mov_caja");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.MocCodcaj, "fk_mov_caja");
 
@@ -5091,10 +5388,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha del movimiento");
 
                 entity.Property(e => e.MocFehoap)
+                    .HasColumnType("datetime")
                     .HasColumnName("MOC_FEHOAP")
                     .HasComment("Fecha hora de apertura");
 
                 entity.Property(e => e.MocFehoci)
+                    .HasColumnType("datetime")
                     .HasColumnName("MOC_FEHOCI")
                     .HasComment("Fecha hora de cierre");
 
@@ -5104,12 +5403,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.MocSalfin)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("MOC_SALFIN")
                     .HasComment("Saldo final (de arrastre)");
 
                 entity.Property(e => e.MocSalini)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("MOC_SALINI")
                     .HasComment("Saldo inicial (de arrastre)");
 
@@ -5137,6 +5436,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("mov_cajadet");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.ModMocid, "fk_mov_cajadet");
 
                 entity.HasIndex(e => e.ModCodcop, "fk_mov_cajadet1");
@@ -5150,7 +5452,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de concepto de movimiento");
 
                 entity.Property(e => e.ModDebe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("MOD_DEBE")
                     .HasComment("Debe - Ingresos");
 
@@ -5159,8 +5461,14 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("MOD_DESCRI")
                     .HasComment("Descripción del movimiento");
 
+                entity.Property(e => e.ModFehomo)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("MOD_FEHOMO")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("Fecha Hora del movimiento");
+
                 entity.Property(e => e.ModHaber)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("MOD_HABER")
                     .HasComment("Haber - egresos");
 
@@ -5193,9 +5501,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("movstock");
 
-                entity.HasComment("Movimientos de stock");
+                entity.HasComment("Movimientos de stock")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.MosCodmov)
+                    .ValueGeneratedNever()
                     .HasColumnName("MOS_CODMOV")
                     .HasComment("codigo de movimiento");
 
@@ -5229,7 +5540,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("novedades_clientes");
 
-                entity.HasComment("Novedades para clientes");
+                entity.HasComment("Novedades para clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.NovCodcli, "fk_novedades_cli_clientes1");
 
@@ -5242,7 +5555,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Si esta activa...0=NO,1=SI");
 
                 entity.Property(e => e.NovCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("NOV_CODCLI")
                     .HasComment("Codigo de cliente");
 
@@ -5275,7 +5588,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("novedades_proveed");
 
-                entity.HasComment("Novedades para clientes");
+                entity.HasComment("Novedades para clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.NovCodpro, "fk_novedades_proveed1");
 
@@ -5316,23 +5631,26 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Pagosccc>(entity =>
             {
                 entity.HasKey(e => new { e.PfcCodcom, e.PfcNrorec, e.PfcCodpro })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("pagosccc");
 
-                entity.HasComment("Cabecera de pagos cta cte");
+                entity.HasComment("Cabecera de pagos cta cte")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PfcCodcom)
                     .HasColumnName("PFC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.PfcNrorec)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFC_NROREC")
                     .HasComment("Nro de recibo");
 
                 entity.Property(e => e.PfcCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PFC_CODPRO");
 
                 entity.Property(e => e.PfcEstado)
@@ -5352,31 +5670,31 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PfcImpche)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPCHE")
                     .HasComment("Importe Cheques");
 
                 entity.Property(e => e.PfcImpefe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPEFE")
                     .HasComment("Importe efectivo");
 
                 entity.Property(e => e.PfcImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPRET")
                     .HasComment("Importe retenciones");
 
                 entity.Property(e => e.PfcImptar)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPTAR")
                     .HasComment("Importe tarjeta");
 
                 entity.Property(e => e.PfcImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPTOT");
 
                 entity.Property(e => e.PfcImptra)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPTRA")
                     .HasComment("Importe Transferencia");
 
@@ -5385,7 +5703,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro cuota");
 
                 entity.Property(e => e.PfcNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFC_NROFAC")
                     .HasComment("Nro de Comprobante");
 
@@ -5398,22 +5716,25 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PagoscccDet>(entity =>
             {
                 entity.HasKey(e => new { e.PfdCodcom, e.PfdNrorec, e.PfdCodpro, e.PfdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
 
                 entity.ToTable("pagosccc_det");
 
-                entity.HasComment("Detalle de pago cuenta corriente");
+                entity.HasComment("Detalle de pago cuenta corriente")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.PfdCodcom, e.PfdNrorec, e.PfdCodpro }, "fk_pagosccc_det_pagosccc1");
 
                 entity.Property(e => e.PfdCodcom).HasColumnName("PFD_CODCOM");
 
                 entity.Property(e => e.PfdNrorec)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFD_NROREC");
 
                 entity.Property(e => e.PfdCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PFD_CODPRO");
 
                 entity.Property(e => e.PfdNrolin)
@@ -5446,12 +5767,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PfdImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFD_IMPORT")
                     .HasComment("Importe");
 
                 entity.Property(e => e.PfdNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFD_NROCOM")
                     .HasComment("Nro de Comprobante");
 
@@ -5470,23 +5791,26 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Pagosccv>(entity =>
             {
                 entity.HasKey(e => new { e.PfcCodcom, e.PfcNrorec })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("pagosccv");
 
-                entity.HasComment("Cabecera de pagos cta cte");
+                entity.HasComment("Cabecera de pagos cta cte")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PfcCodcom)
                     .HasColumnName("PFC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.PfcNrorec)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFC_NROREC")
                     .HasComment("Nro de recibo");
 
                 entity.Property(e => e.PfcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PFC_CODCLI");
 
                 entity.Property(e => e.PfcCodusu)
@@ -5509,31 +5833,31 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PfcImpche)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPCHE")
                     .HasComment("Importe Cheques");
 
                 entity.Property(e => e.PfcImpefe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPEFE")
                     .HasComment("Importe efectivo");
 
                 entity.Property(e => e.PfcImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPRET")
                     .HasComment("Importe retenciones");
 
                 entity.Property(e => e.PfcImptar)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPTAR")
                     .HasComment("Importe tarjeta");
 
                 entity.Property(e => e.PfcImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPTOT");
 
                 entity.Property(e => e.PfcImptra)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFC_IMPTRA")
                     .HasComment("Importe Transferencia");
 
@@ -5546,7 +5870,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro cuota");
 
                 entity.Property(e => e.PfcNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFC_NROFAC")
                     .HasComment("Nro de Comprobante");
 
@@ -5559,18 +5883,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PagosccvDet>(entity =>
             {
                 entity.HasKey(e => new { e.PfdCodcom, e.PfdNrorec, e.PfdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("pagosccv_det");
 
-                entity.HasComment("Detalle de pago cuenta corriente");
+                entity.HasComment("Detalle de pago cuenta corriente")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.PfdCodcom, e.PfdNrorec }, "fk_pagosccv_det_pagosccv1");
 
                 entity.Property(e => e.PfdCodcom).HasColumnName("PFD_CODCOM");
 
                 entity.Property(e => e.PfdNrorec)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFD_NROREC");
 
                 entity.Property(e => e.PfdNrolin)
@@ -5596,12 +5923,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PfdImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PFD_IMPORT")
                     .HasComment("Importe");
 
                 entity.Property(e => e.PfdNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PFD_NROCOM")
                     .HasComment("Nro de Comprobante");
 
@@ -5620,23 +5947,26 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Pagoscoc>(entity =>
             {
                 entity.HasKey(e => new { e.PccCodcom, e.PccNrofac, e.PccCodpro })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("pagoscoc");
 
-                entity.HasComment("Cabecera de pagos contado compras\n");
+                entity.HasComment("Cabecera de pagos contado compras\n")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PccCodcom)
                     .HasColumnName("PCC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.PccNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCC_NROFAC")
                     .HasComment("Nro de Comprobante");
 
                 entity.Property(e => e.PccCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PCC_CODPRO");
 
                 entity.Property(e => e.PccEstado)
@@ -5654,31 +5984,31 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PccImpche)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPCHE")
                     .HasComment("Importe Cheques");
 
                 entity.Property(e => e.PccImpefe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPEFE")
                     .HasComment("Importe efectivo");
 
                 entity.Property(e => e.PccImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPRET")
                     .HasComment("Importe retenciones");
 
                 entity.Property(e => e.PccImptar)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPTAR")
                     .HasComment("Importe tarjeta");
 
                 entity.Property(e => e.PccImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPTOT");
 
                 entity.Property(e => e.PccImptra)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPTRA")
                     .HasComment("Importe Transferencia");
 
@@ -5691,22 +6021,25 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PagoscocDet>(entity =>
             {
                 entity.HasKey(e => new { e.PcdCodcom, e.PcdNrofac, e.PcdCodpro, e.PcdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
 
                 entity.ToTable("pagoscoc_det");
 
-                entity.HasComment("Detalle de medios de pago");
+                entity.HasComment("Detalle de medios de pago")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.PcdCodcom, e.PcdNrofac, e.PcdCodpro }, "fk_pagoscoc_det_pagoscoc1");
 
                 entity.Property(e => e.PcdCodcom).HasColumnName("PCD_CODCOM");
 
                 entity.Property(e => e.PcdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROFAC");
 
                 entity.Property(e => e.PcdCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PCD_CODPRO");
 
                 entity.Property(e => e.PcdNrolin)
@@ -5732,12 +6065,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PcdImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCD_IMPORT")
                     .HasComment("Importe");
 
                 entity.Property(e => e.PcdNrocom)
-                    .HasColumnType("decimal(15,0)")
+                    .HasPrecision(15)
                     .HasColumnName("PCD_NROCOM")
                     .HasComment("Nro de Comprobante");
 
@@ -5756,18 +6089,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Pagoscov>(entity =>
             {
                 entity.HasKey(e => new { e.PccCodcom, e.PccNrofac })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("pagoscov");
 
-                entity.HasComment("Cabecera de pagos contado");
+                entity.HasComment("Cabecera de pagos contado")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PccCodcom)
                     .HasColumnName("PCC_CODCOM")
                     .HasComment("Codigo de comprobante");
 
                 entity.Property(e => e.PccNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCC_NROFAC")
                     .HasComment("Nro de Comprobante");
 
@@ -5790,31 +6126,31 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PccImpche)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPCHE")
                     .HasComment("Importe Cheques");
 
                 entity.Property(e => e.PccImpefe)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPEFE")
                     .HasComment("Importe efectivo");
 
                 entity.Property(e => e.PccImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPRET")
                     .HasComment("Importe retenciones");
 
                 entity.Property(e => e.PccImptar)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPTAR")
                     .HasComment("Importe tarjeta");
 
                 entity.Property(e => e.PccImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPTOT");
 
                 entity.Property(e => e.PccImptra)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPTRA")
                     .HasComment("Importe Transferencia");
 
@@ -5831,18 +6167,21 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PagoscovDet>(entity =>
             {
                 entity.HasKey(e => new { e.PcdCodcom, e.PcdNrofac, e.PcdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("pagoscov_det");
 
-                entity.HasComment("Detalle de medios de pago");
+                entity.HasComment("Detalle de medios de pago")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.PcdCodcom, e.PcdNrofac }, "fk_pagoscov_det_pagoscov1");
 
                 entity.Property(e => e.PcdCodcom).HasColumnName("PCD_CODCOM");
 
                 entity.Property(e => e.PcdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROFAC");
 
                 entity.Property(e => e.PcdNrolin)
@@ -5868,12 +6207,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pago");
 
                 entity.Property(e => e.PcdImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCD_IMPORT")
                     .HasComment("Importe");
 
                 entity.Property(e => e.PcdNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROCOM")
                     .HasComment("Nro de Comprobante");
 
@@ -5896,9 +6235,13 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("paises");
 
-                entity.HasComment("Paises");
+                entity.HasComment("Paises")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.PaiCodpai).HasColumnName("PAI_CODPAI");
+                entity.Property(e => e.PaiCodpai)
+                    .ValueGeneratedNever()
+                    .HasColumnName("PAI_CODPAI");
 
                 entity.Property(e => e.PaiCodiso)
                     .HasMaxLength(3)
@@ -5916,7 +6259,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("parametros");
 
-                entity.HasComment("Parametros generales del sistema");
+                entity.HasComment("Parametros generales del sistema")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.ParAbrevi, "CODIGO");
 
@@ -5948,10 +6293,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("pedidosc");
 
-                entity.HasComment("Pedidos de compra - cabecera");
+                entity.HasComment("Pedidos de compra - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PccNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCC_NROPED")
                     .HasComment("Numero de pedido");
 
@@ -5960,12 +6307,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Pedido de Acopio: 0=NO, 1=Acopio de Dinero, 2:Acopio de mercaderias.");
 
                 entity.Property(e => e.PccBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_BONIF1")
                     .HasComment("bonfiicacion 1");
 
                 entity.Property(e => e.PccBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_BONIF2")
                     .HasComment("bonificacion 2");
 
@@ -5982,7 +6329,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de lista de precios utilizada");
 
                 entity.Property(e => e.PccCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PCC_CODPRO")
                     .HasComment("Cod. de proveedor");
 
@@ -6000,12 +6347,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Titulo del Pedido");
 
                 entity.Property(e => e.PccDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_DTOGEN")
                     .HasComment("Importe dto. gral del comprobante");
 
                 entity.Property(e => e.PccDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PCC_DTOGEP")
                     .HasComment("Porcentaje de descuento gral.");
 
@@ -6035,17 +6382,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pedido");
 
                 entity.Property(e => e.PccImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.PccImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.PccImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_IMPORT")
                     .HasComment("Importe antes de bonif.");
 
@@ -6064,12 +6411,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Mail para avisar ingreso");
 
                 entity.Property(e => e.PccNeto)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_NETO")
                     .HasComment("Importe neto ");
 
                 entity.Property(e => e.PccNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCC_NROFAC");
 
                 entity.Property(e => e.PccNrooco)
@@ -6078,12 +6425,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro orden de compra");
 
                 entity.Property(e => e.PccNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCC_NROPRE")
                     .HasComment("Nro de presupuesto");
 
                 entity.Property(e => e.PccNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCC_NROREM")
                     .HasComment("Nro de remito (aca o en detalle..?)");
 
@@ -6093,7 +6440,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PccTotal)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PCC_TOTAL")
                     .HasComment("Importe total ");
             });
@@ -6101,16 +6448,19 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PedidoscDet>(entity =>
             {
                 entity.HasKey(e => new { e.PcdNroped, e.PcdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("pedidosc_det");
 
-                entity.HasComment("Pedidos de compra - detalle");
+                entity.HasComment("Pedidos de compra - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PcdNroped, "fk_pedidosc_detalle_pedidosc");
 
                 entity.Property(e => e.PcdNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROPED")
                     .HasComment("Numero");
 
@@ -6119,22 +6469,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.PcdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_BONIF1")
                     .HasComment("Porc. Bonificacion 1");
 
                 entity.Property(e => e.PcdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_BONIF2")
                     .HasComment("Porc. Bonificacion 2");
 
                 entity.Property(e => e.PcdCanent)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_CANENT")
                     .HasComment("Cantidad entregada");
 
                 entity.Property(e => e.PcdCanped)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_CANPED")
                     .HasComment("Cantidad pedida");
 
@@ -6144,7 +6494,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de articulo");
 
                 entity.Property(e => e.PcdCodmon)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("PCD_CODMON")
                     .HasComment("codigo de moneda");
 
@@ -6174,22 +6523,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha entrega");
 
                 entity.Property(e => e.PcdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.PcdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.PcdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.PcdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_IMPTOT")
                     .HasComment("Importe total unitario");
 
@@ -6198,16 +6547,16 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea acondicionamiento");
 
                 entity.Property(e => e.PcdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROFAC")
                     .HasComment("Nro. de factura");
 
                 entity.Property(e => e.PcdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROPRE");
 
                 entity.Property(e => e.PcdNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PCD_NROREM")
                     .HasComment("Nro. de remito (de entrega) aca o en el remito... x entr. parciales");
 
@@ -6217,7 +6566,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PcdPreuni)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PCD_PREUNI")
                     .HasComment("Precio unitario");
 
@@ -6232,7 +6581,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.PcdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PCD_VALIVA")
                     .HasComment("Alicuota IVA");
 
@@ -6250,10 +6599,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("pedidosv");
 
-                entity.HasComment("Presupuestos - cabecera");
+                entity.HasComment("Presupuestos - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PvcNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVC_NROPED")
                     .HasComment("Numero de pedido");
 
@@ -6262,17 +6613,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Pedido de Acopio: 0=NO, 1=Acopio de Dinero, 2:Acopio de mercaderías.");
 
                 entity.Property(e => e.PvcBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_BONIF1")
                     .HasComment("bonfiicacion 1");
 
                 entity.Property(e => e.PvcBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_BONIF2")
                     .HasComment("bonificacion 2");
 
                 entity.Property(e => e.PvcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PVC_CODCLI")
                     .HasComment("Cod. de cliente");
 
@@ -6299,12 +6650,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.PvcCodven).HasColumnName("PVC_CODVEN");
 
                 entity.Property(e => e.PvcDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_DTOGEN")
                     .HasComment("Importe dto. gral del comprobante");
 
                 entity.Property(e => e.PvcDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PVC_DTOGEP")
                     .HasComment("Porcentaje de descuento gral.");
 
@@ -6329,17 +6680,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de pedido");
 
                 entity.Property(e => e.PvcImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.PvcImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.PvcImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_IMPORT")
                     .HasComment("Importe antes de bonif.");
 
@@ -6353,7 +6704,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("PVC_LUGENT");
 
                 entity.Property(e => e.PvcNeto)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_NETO")
                     .HasComment("Importe neto ");
 
@@ -6363,7 +6714,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nombre de Cliente");
 
                 entity.Property(e => e.PvcNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVC_NROFAC")
                     .HasComment("Nro de factura");
 
@@ -6373,12 +6724,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro orden de compra");
 
                 entity.Property(e => e.PvcNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVC_NROPRE")
                     .HasComment("Nro de presupuesto");
 
                 entity.Property(e => e.PvcNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVC_NROREM")
                     .HasComment("Nro de remito (aca o en detalle..?)");
 
@@ -6388,7 +6739,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PvcTotal)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PVC_TOTAL")
                     .HasComment("Importe total ");
             });
@@ -6396,16 +6747,19 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PedidosvDet>(entity =>
             {
                 entity.HasKey(e => new { e.PvdNroped, e.PvdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("pedidosv_det");
 
-                entity.HasComment("Presupuestos - detalle");
+                entity.HasComment("Presupuestos - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PvdNroped, "fk_pedidos_detalle_pedidos");
 
                 entity.Property(e => e.PvdNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVD_NROPED")
                     .HasComment("Número");
 
@@ -6414,22 +6768,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.PvdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_BONIF1")
                     .HasComment("% Bonificacion 1");
 
                 entity.Property(e => e.PvdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_BONIF2")
                     .HasComment("% Bonificacion 2");
 
                 entity.Property(e => e.PvdCanent)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_CANENT")
                     .HasComment("Cantidad entregada");
 
                 entity.Property(e => e.PvdCanped)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_CANPED")
                     .HasComment("Cantidad pedida");
 
@@ -6459,36 +6813,36 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha entrega");
 
                 entity.Property(e => e.PvdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.PvdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.PvdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.PvdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_IMPTOT")
                     .HasComment("Importe total unitario");
 
                 entity.Property(e => e.PvdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVD_NROFAC")
                     .HasComment("Nro. de factura");
 
                 entity.Property(e => e.PvdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVD_NROPRE");
 
                 entity.Property(e => e.PvdNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PVD_NROREM")
                     .HasComment("Nro. de remito (de entrega) aca o en el remito... x entr. parciales");
 
@@ -6498,7 +6852,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PvdPreunit)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PVD_PREUNIT")
                     .HasComment("Precio unitario");
 
@@ -6508,7 +6862,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.PvdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PVD_VALIVA")
                     .HasComment("Alicuota de IVA");
 
@@ -6526,6 +6880,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("pre");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Codart)
                     .HasMaxLength(15)
                     .HasColumnName("CODART");
@@ -6533,18 +6890,21 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.Moneda).HasColumnName("MONEDA");
 
                 entity.Property(e => e.Precos)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PRECOS");
             });
 
             modelBuilder.Entity<Precio>(entity =>
             {
                 entity.HasKey(e => new { e.PreCodart, e.PrePvci002 })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("precios");
 
-                entity.HasComment("Precios de los articulos");
+                entity.HasComment("Precios de los articulos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PreCodart, "fk_precios_articulos1");
 
@@ -6554,7 +6914,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de artículo");
 
                 entity.Property(e => e.PrePvci002)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI002");
 
                 entity.Property(e => e.PreCmon001).HasColumnName("PRE_CMON001");
@@ -6662,125 +7022,125 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("PRE_CODSRU");
 
                 entity.Property(e => e.PrePrecos)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PRECOS");
 
                 entity.Property(e => e.PrePvci001)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI001")
                     .HasComment("Precio de venta con iva lista 1");
 
                 entity.Property(e => e.PrePvci003)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI003");
 
                 entity.Property(e => e.PrePvci004)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI004");
 
                 entity.Property(e => e.PrePvci005)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI005");
 
                 entity.Property(e => e.PrePvci006)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI006");
 
                 entity.Property(e => e.PrePvci007)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI007");
 
                 entity.Property(e => e.PrePvci008)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI008");
 
                 entity.Property(e => e.PrePvci009)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI009");
 
                 entity.Property(e => e.PrePvci010)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI010");
 
                 entity.Property(e => e.PrePvci011)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI011");
 
                 entity.Property(e => e.PrePvci012)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI012");
 
                 entity.Property(e => e.PrePvci013)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI013");
 
                 entity.Property(e => e.PrePvci014)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI014");
 
                 entity.Property(e => e.PrePvci015)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVCI015");
 
                 entity.Property(e => e.PrePvsi001)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI001")
                     .HasComment("Precio de venta sin iva lista 1");
 
                 entity.Property(e => e.PrePvsi002)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI002");
 
                 entity.Property(e => e.PrePvsi003)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI003");
 
                 entity.Property(e => e.PrePvsi004)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI004");
 
                 entity.Property(e => e.PrePvsi005)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI005");
 
                 entity.Property(e => e.PrePvsi006)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI006");
 
                 entity.Property(e => e.PrePvsi007)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI007");
 
                 entity.Property(e => e.PrePvsi008)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI008");
 
                 entity.Property(e => e.PrePvsi009)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI009");
 
                 entity.Property(e => e.PrePvsi010)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI010");
 
                 entity.Property(e => e.PrePvsi011)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI011");
 
                 entity.Property(e => e.PrePvsi012)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI012");
 
                 entity.Property(e => e.PrePvsi013)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI013");
 
                 entity.Property(e => e.PrePvsi014)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI014");
 
                 entity.Property(e => e.PrePvsi015)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_PVSI015");
 
                 entity.Property(e => e.PreTcal001)
@@ -6875,68 +7235,68 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasDefaultValueSql("'A'");
 
                 entity.Property(e => e.PreUtil001)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL001")
                     .HasComment("Utilidad Lista 1");
 
                 entity.Property(e => e.PreUtil002)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("PRE_UTIL002");
 
                 entity.Property(e => e.PreUtil003)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL003");
 
                 entity.Property(e => e.PreUtil004)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL004");
 
                 entity.Property(e => e.PreUtil005)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL005");
 
                 entity.Property(e => e.PreUtil006)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL006");
 
                 entity.Property(e => e.PreUtil007)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL007");
 
                 entity.Property(e => e.PreUtil008)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL008");
 
                 entity.Property(e => e.PreUtil009)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL009");
 
                 entity.Property(e => e.PreUtil010)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL010");
 
                 entity.Property(e => e.PreUtil011)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL011");
 
                 entity.Property(e => e.PreUtil012)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL012");
 
                 entity.Property(e => e.PreUtil013)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL013");
 
                 entity.Property(e => e.PreUtil014)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL014");
 
                 entity.Property(e => e.PreUtil015)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("PRE_UTIL015");
 
                 entity.Property(e => e.PreValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PRE_VALIVA");
 
                 entity.HasOne(d => d.PreCodartNavigation)
@@ -6953,20 +7313,22 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("presup");
 
-                entity.HasComment("Pedidos - cabecera");
+                entity.HasComment("Pedidos - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PtcNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PTC_NROPRE")
                     .HasComment("Numero");
 
                 entity.Property(e => e.PtcBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_BONIF1")
                     .HasComment("bonfiicacion 1");
 
                 entity.Property(e => e.PtcBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_BONIF2")
                     .HasComment("bonificacion 2");
 
@@ -6976,7 +7338,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Centro de Costo");
 
                 entity.Property(e => e.PtcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PTC_CODCLI")
                     .HasComment("Cod. de cliente");
 
@@ -7020,12 +7382,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("dias de entrega");
 
                 entity.Property(e => e.PtcDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_DTOGEN")
                     .HasComment("Importe dto. gral comprobante");
 
                 entity.Property(e => e.PtcDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PTC_DTOGEP")
                     .HasComment("Porcentaje dto. gral comprobante");
 
@@ -7054,27 +7416,27 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha vencimiento presup.");
 
                 entity.Property(e => e.PtcImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.PtcImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.PtcImpnet)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_IMPNET")
                     .HasComment("Importe neto ");
 
                 entity.Property(e => e.PtcImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_IMPORT")
                     .HasComment("Importe antes de bonificaciones");
 
                 entity.Property(e => e.PtcImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PTC_IMPTOT")
                     .HasComment("Importe total ");
 
@@ -7093,7 +7455,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PtcValmon)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PTC_VALMON")
                     .HasComment("Valor de la moneda");
             });
@@ -7101,14 +7463,18 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PresupDet>(entity =>
             {
                 entity.HasKey(e => new { e.PtdNropre, e.PtdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("presup_det");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PtdNropre, "fk_pedidos_detalle_pedidos");
 
                 entity.Property(e => e.PtdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PTD_NROPRE")
                     .HasComment("Número");
 
@@ -7122,17 +7488,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Si viene del archivo ampliado de art");
 
                 entity.Property(e => e.PtdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_BONIF1")
                     .HasComment("% Bonificacion 1");
 
                 entity.Property(e => e.PtdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_BONIF2")
                     .HasComment("% Bonificacion 2");
 
                 entity.Property(e => e.PtdCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_CANTID")
                     .HasComment("Cantidad pedida");
 
@@ -7166,22 +7532,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha entrega");
 
                 entity.Property(e => e.PtdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.PtdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.PtdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.PtdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPTOT")
                     .HasComment("Importe total unitario");
 
@@ -7191,7 +7557,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PtdPrecio)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_PRECIO")
                     .HasComment("Precio unitario");
 
@@ -7201,7 +7567,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.PtdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PTD_VALIVA");
 
                 entity.HasOne(d => d.PtdNropreNavigation)
@@ -7218,15 +7584,17 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("presupmod");
 
-                entity.HasComment("Cabecera presupuestos modelo");
+                entity.HasComment("Cabecera presupuestos modelo")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PtcNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PTC_NROPRE")
                     .HasComment("Numero");
 
                 entity.Property(e => e.PtcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PTC_CODCLI")
                     .HasComment("Cod. de cliente");
 
@@ -7262,16 +7630,19 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<PresupmodDet>(entity =>
             {
                 entity.HasKey(e => new { e.PtdNropre, e.PtdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("presupmod_det");
 
-                entity.HasComment("Detalle Presupuestos modelo");
+                entity.HasComment("Detalle Presupuestos modelo")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PtdNropre, "fk_presupmod_det_presupmod1");
 
                 entity.Property(e => e.PtdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("PTD_NROPRE");
 
                 entity.Property(e => e.PtdNrolin)
@@ -7279,17 +7650,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.PtdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_BONIF1")
                     .HasComment("Bonificacion 1");
 
                 entity.Property(e => e.PtdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_BONIF2")
                     .HasComment("Bonificacion 2");
 
                 entity.Property(e => e.PtdCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_CANTID")
                     .HasComment("Cantidad pedida");
 
@@ -7313,22 +7684,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Especificaciones particulares");
 
                 entity.Property(e => e.PtdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPIVG")
                     .HasComment("Iva general");
 
                 entity.Property(e => e.PtdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPIVR")
                     .HasComment("Iva reducido");
 
                 entity.Property(e => e.PtdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPNET")
                     .HasComment("Importe neto");
 
                 entity.Property(e => e.PtdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_IMPTOT")
                     .HasComment("Importe total");
 
@@ -7338,7 +7709,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.PtdPrecio)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PTD_PRECIO")
                     .HasComment("Precio unitario");
 
@@ -7348,7 +7719,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.PtdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PTD_VALIVA");
 
                 entity.HasOne(d => d.PtdNropreNavigation)
@@ -7365,6 +7736,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("promociones");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.PrmCodart)
                     .HasMaxLength(15)
                     .HasColumnName("PRM_CODART");
@@ -7378,7 +7752,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("PRM_HASTA");
 
                 entity.Property(e => e.PrmIva)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("PRM_IVA");
 
                 entity.Property(e => e.PrmPrecio)
@@ -7389,11 +7763,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<ProveeContac>(entity =>
             {
                 entity.HasKey(e => new { e.PycCodpro, e.PycCodcon })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("provee_contac");
 
-                entity.HasComment("Proveedores y contactos");
+                entity.HasComment("Proveedores y contactos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PycCodpro, "fk_provee_contac_proveedores1");
 
@@ -7404,7 +7781,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de proveedor");
 
                 entity.Property(e => e.PycCodcon)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("PYC_CODCON")
                     .HasComment("Codigo de contacto");
 
@@ -7428,6 +7805,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("proveedores");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.ProCodciv, "fk_proveedores_condiva1");
 
                 entity.HasIndex(e => e.ProCodcpa, "fk_proveedores_condpago1");
@@ -7437,6 +7817,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.HasIndex(e => e.ProCodprv, "fk_proveedores_provincia1");
 
                 entity.Property(e => e.ProCodpro)
+                    .ValueGeneratedNever()
                     .HasColumnName("PRO_CODPRO")
                     .HasComment("codigo de proveedor");
 
@@ -7450,7 +7831,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.ProCodcpa).HasColumnName("PRO_CODCPA");
 
                 entity.Property(e => e.ProCodloc)
-                    .HasColumnType("decimal(5,0)")
+                    .HasPrecision(5)
                     .HasColumnName("PRO_CODLOC");
 
                 entity.Property(e => e.ProCodmon)
@@ -7463,7 +7844,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo Postal");
 
                 entity.Property(e => e.ProCodprv)
-                    .HasColumnType("decimal(3,0)")
+                    .HasPrecision(3)
                     .HasColumnName("PRO_CODPRV");
 
                 entity.Property(e => e.ProConcep)
@@ -7472,7 +7853,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("concepto: mercaderia o gastos");
 
                 entity.Property(e => e.ProCtacte)
-                    .HasColumnType("tinyint")
                     .HasColumnName("PRO_CTACTE")
                     .HasComment("Cuenta Corriente");
 
@@ -7482,7 +7862,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Cuit");
 
                 entity.Property(e => e.ProDescpa)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PRO_DESCPA")
                     .HasComment("Descuento para condición de pago habitual");
 
@@ -7492,7 +7872,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nombre-denominacion");
 
                 entity.Property(e => e.ProDeslis)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("PRO_DESLIS")
                     .HasComment("Descuento sobre lista de precios");
 
@@ -7511,6 +7891,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("PRO_FAX")
                     .HasComment("Fax empresa");
 
+                entity.Property(e => e.ProFecalt)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("PRO_FECALT")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("fecha de alta");
+
                 entity.Property(e => e.ProFecufr)
                     .HasColumnType("date")
                     .HasColumnName("PRO_FECUFR")
@@ -7527,7 +7913,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("nro. ingresos brutos");
 
                 entity.Property(e => e.ProLimcre)
-                    .HasColumnType("decimal(11,0)")
+                    .HasPrecision(11)
                     .HasColumnName("PRO_LIMCRE")
                     .HasComment("Limite de credito");
 
@@ -7542,7 +7928,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("observaciones");
 
                 entity.Property(e => e.ProSaldo)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("PRO_SALDO")
                     .HasComment("saldo");
 
@@ -7598,11 +7984,14 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("provincias");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.PrvCodprv, "provin_pk")
                     .IsUnique();
 
                 entity.Property(e => e.PrvCodprv)
-                    .HasColumnType("decimal(3,0)")
+                    .HasPrecision(3)
                     .HasColumnName("PRV_CODPRV");
 
                 entity.Property(e => e.PrvDescri)
@@ -7619,7 +8008,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("puestos");
 
-                entity.HasComment("Puestos de trabajo");
+                entity.HasComment("Puestos de trabajo")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PueNompc, "PUE_NOMPC_UNIQUE")
                     .IsUnique();
@@ -7627,6 +8018,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.HasIndex(e => e.PueCoddep, "fk_puestos_depositos1");
 
                 entity.Property(e => e.PueCodpue)
+                    .ValueGeneratedNever()
                     .HasColumnName("PUE_CODPUE")
                     .HasComment("Codigo");
 
@@ -7725,6 +8117,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("recl_mov");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.MorIdrec, "fk_recl_mov_reclamos1_idx");
 
                 entity.Property(e => e.MorId)
@@ -7764,6 +8159,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("reclamos");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.RecCodart, "fk_reclamos_articulos_idx");
 
                 entity.HasIndex(e => e.RecCodcli, "fk_reclamos_clientes1_idx");
@@ -7775,7 +8173,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Id");
 
                 entity.Property(e => e.RecCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("REC_CANTID")
                     .HasComment("Cantidad");
 
@@ -7787,7 +8185,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de articulo");
 
                 entity.Property(e => e.RecCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("REC_CODCLI");
 
                 entity.Property(e => e.RecCodpro).HasColumnName("REC_CODPRO");
@@ -7817,7 +8215,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha Reclamo");
 
                 entity.Property(e => e.RecGarant)
-                    .IsRequired()
                     .HasColumnType("bit(1)")
                     .HasColumnName("REC_GARANT")
                     .HasDefaultValueSql("b'0'")
@@ -7828,37 +8225,35 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasColumnName("REC_INFREP");
 
                 entity.Property(e => e.RecNrocom)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("REC_NROCOM");
 
                 entity.Property(e => e.RecNumero)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("REC_NUMERO")
                     .HasComment("Nro reclamo-reparacion");
 
                 entity.Property(e => e.RecPrflete)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("REC_PRFLETE")
                     .HasComment("Precio flete");
 
                 entity.Property(e => e.RecPrrepa)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("REC_PRREPA")
                     .HasComment("Precio Reparacion");
 
                 entity.Property(e => e.RecPrrepu)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("REC_PRREPU")
                     .HasComment("Precio Repuestos");
 
                 entity.Property(e => e.RecPrtota)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("REC_PRTOTA")
                     .HasComment("Precio Total");
 
-                entity.Property(e => e.RecTipcom)
-                    .HasColumnType("tinyint")
-                    .HasColumnName("REC_TIPCOM");
+                entity.Property(e => e.RecTipcom).HasColumnName("REC_TIPCOM");
 
                 entity.Property(e => e.RecTratam)
                     .IsRequired()
@@ -7893,7 +8288,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("reglapre");
 
-                entity.HasComment("Reglas de precios");
+                entity.HasComment("Reglas de precios")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.RepCodsru, "fk_precios_r_Subrubros1");
 
@@ -7905,7 +8302,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.HasIndex(e => e.RepCodrub, "fk_precios_r_rubros1");
 
-                entity.Property(e => e.RepCodreg).HasColumnName("REP_CODREG");
+                entity.Property(e => e.RepCodreg)
+                    .ValueGeneratedNever()
+                    .HasColumnName("REP_CODREG");
 
                 entity.Property(e => e.RepCodart)
                     .HasMaxLength(15)
@@ -7947,7 +8346,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.RepUtilid)
-                    .HasColumnType("decimal(6,2)")
+                    .HasPrecision(6, 2)
                     .HasColumnName("REP_UTILID")
                     .HasComment("Porcentaje de utilidad");
 
@@ -7980,19 +8379,22 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Remitosc>(entity =>
             {
                 entity.HasKey(e => new { e.RccNrorem, e.RccCodpro })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("remitosc");
 
-                entity.HasComment("Remitos de compra - cabecera");
+                entity.HasComment("Remitos de compra - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.RccNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCC_NROREM")
                     .HasComment("Numero de remito");
 
                 entity.Property(e => e.RccCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("RCC_CODPRO")
                     .HasComment("Cod. de proveedor");
 
@@ -8001,12 +8403,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Remito de Acopio: 0=NO, 1=Acopio de Dinero, 2:Acopio de mercaderías.");
 
                 entity.Property(e => e.RccBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_BONIF1")
                     .HasComment("bonfiicacion 1");
 
                 entity.Property(e => e.RccBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_BONIF2")
                     .HasComment("bonificacion 2");
 
@@ -8035,12 +8437,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de vendedor");
 
                 entity.Property(e => e.RccDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_DTOGEN")
                     .HasComment("Importe dto. gral. comprobante");
 
                 entity.Property(e => e.RccDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("RCC_DTOGEP")
                     .HasComment("Porcentaje dto. general");
 
@@ -8055,27 +8457,27 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de remito");
 
                 entity.Property(e => e.RccImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.RccImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.RccImpnet)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_IMPNET")
                     .HasComment("Importe neto");
 
                 entity.Property(e => e.RccImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_IMPORT")
                     .HasComment("Importe antes de bonificaciones");
 
                 entity.Property(e => e.RccImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RCC_IMPTOT")
                     .HasComment("Importe total");
 
@@ -8089,7 +8491,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("lugar de entrega");
 
                 entity.Property(e => e.RccNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCC_NROFAC")
                     .HasComment("Nro de factura");
 
@@ -8099,12 +8501,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro orden de compra");
 
                 entity.Property(e => e.RccNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCC_NROPED")
                     .HasComment("Nro de pedido");
 
                 entity.Property(e => e.RccNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCC_NROPRE")
                     .HasComment("Nro de presupuesto");
 
@@ -8117,21 +8519,24 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<RemitoscDet>(entity =>
             {
                 entity.HasKey(e => new { e.RcdNrorem, e.RcdCodpro, e.RcdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("remitosc_det");
 
-                entity.HasComment("Remitos de compra - detalle");
+                entity.HasComment("Remitos de compra - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.RcdNrorem, e.RcdCodpro }, "fk_remitosc_det_remitosc1");
 
                 entity.Property(e => e.RcdNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCD_NROREM")
                     .HasComment("Nro Remito");
 
                 entity.Property(e => e.RcdCodpro)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("RCD_CODPRO")
                     .HasComment("Codigo de Proveedor");
 
@@ -8140,22 +8545,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.RcdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_BONIF1")
                     .HasComment("% Bonificacion 1");
 
                 entity.Property(e => e.RcdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_BONIF2")
                     .HasComment("% Bonificacion 2");
 
                 entity.Property(e => e.RcdCandev)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_CANDEV")
                     .HasComment("Cantidad devuelta");
 
                 entity.Property(e => e.RcdCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_CANTID")
                     .HasComment("Cantidad ");
 
@@ -8180,22 +8585,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Estado de la linea, ABIERTO,CERRADO,ANULADO");
 
                 entity.Property(e => e.RcdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.RcdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.RcdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.RcdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_IMPTOT")
                     .HasComment("Importe total");
 
@@ -8204,7 +8609,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea del acopio");
 
                 entity.Property(e => e.RcdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCD_NROFAC")
                     .HasComment("Nro. de factura");
 
@@ -8213,12 +8618,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro linea de pedido");
 
                 entity.Property(e => e.RcdNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCD_NROPED")
                     .HasComment("Nro. de pedido");
 
                 entity.Property(e => e.RcdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RCD_NROPRE")
                     .HasComment("Nro presupuesto");
 
@@ -8228,7 +8633,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.RcdPrecio)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RCD_PRECIO")
                     .HasComment("Precio unitario");
 
@@ -8243,7 +8648,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.RcdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("RCD_VALIVA")
                     .HasComment("ALICIUOTA IVA");
 
@@ -8261,10 +8666,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("remitosv");
 
-                entity.HasComment("Presupuestos - cabecera");
+                entity.HasComment("Presupuestos - cabecera")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.RvcNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVC_NROREM")
                     .HasComment("Numero de remito");
 
@@ -8273,17 +8680,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Remito de Acopio: 0=NO, 1=Acopio de Dinero, 2:Acopio de mercaderías.");
 
                 entity.Property(e => e.RvcBonif1)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_BONIF1")
                     .HasComment("bonfiicacion 1");
 
                 entity.Property(e => e.RvcBonif2)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_BONIF2")
                     .HasComment("bonificacion 2");
 
                 entity.Property(e => e.RvcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("RVC_CODCLI")
                     .HasComment("Cod. de cliente");
 
@@ -8312,12 +8719,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Codigo de vendedor");
 
                 entity.Property(e => e.RvcDtogen)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_DTOGEN")
                     .HasComment("Importe dto. gral. comprobante");
 
                 entity.Property(e => e.RvcDtogep)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("RVC_DTOGEP")
                     .HasComment("Porcentaje dto. general");
 
@@ -8332,27 +8739,27 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de remito");
 
                 entity.Property(e => e.RvcImpivg)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_IMPIVG")
                     .HasComment("Importe iva general");
 
                 entity.Property(e => e.RvcImpivr)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_IMPIVR")
                     .HasComment("Importe iva reducido");
 
                 entity.Property(e => e.RvcImpnet)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_IMPNET")
                     .HasComment("Importe neto");
 
                 entity.Property(e => e.RvcImport)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_IMPORT")
                     .HasComment("Importe antes de bonificaciones");
 
                 entity.Property(e => e.RvcImptot)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RVC_IMPTOT")
                     .HasComment("Importe total");
 
@@ -8366,7 +8773,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("lugar de entrega");
 
                 entity.Property(e => e.RvcNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVC_NROFAC")
                     .HasComment("Nro de factura");
 
@@ -8376,12 +8783,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro orden de compra");
 
                 entity.Property(e => e.RvcNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVC_NROPED")
                     .HasComment("Nro de pedido");
 
                 entity.Property(e => e.RvcNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVC_NROPRE")
                     .HasComment("Nro de presupuesto");
 
@@ -8394,16 +8801,19 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<RemitosvDet>(entity =>
             {
                 entity.HasKey(e => new { e.RvdNrorem, e.RvdNrolin })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("remitosv_det");
 
-                entity.HasComment("Presupuestos - detalle");
+                entity.HasComment("Presupuestos - detalle")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.RvdNrorem, "fk_pedidos_detalle_pedidos");
 
                 entity.Property(e => e.RvdNrorem)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVD_NROREM")
                     .HasComment("Número");
 
@@ -8412,22 +8822,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro de linea");
 
                 entity.Property(e => e.RvdBonif1)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_BONIF1")
                     .HasComment("% Bonificacion 1");
 
                 entity.Property(e => e.RvdBonif2)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_BONIF2")
                     .HasComment("% Bonificacion 2");
 
                 entity.Property(e => e.RvdCandev)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_CANDEV")
                     .HasComment("Cantidad devuelta");
 
                 entity.Property(e => e.RvdCantid)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_CANTID")
                     .HasComment("Cantidad ");
 
@@ -8447,22 +8857,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Estado de la linea, ABIERTO,CERRADO,ANULADO");
 
                 entity.Property(e => e.RvdImpivg)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_IMPIVG")
                     .HasComment("Importe Iva general");
 
                 entity.Property(e => e.RvdImpivr)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_IMPIVR")
                     .HasComment("Importe Iva reducido");
 
                 entity.Property(e => e.RvdImpnet)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_IMPNET")
                     .HasComment("Importe neto unitario");
 
                 entity.Property(e => e.RvdImptot)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_IMPTOT")
                     .HasComment("Importe total");
 
@@ -8471,7 +8881,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Linea del acondicionamiento");
 
                 entity.Property(e => e.RvdNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVD_NROFAC")
                     .HasComment("Nro. de factura");
 
@@ -8480,12 +8890,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Nro linea de pedido");
 
                 entity.Property(e => e.RvdNroped)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVD_NROPED")
                     .HasComment("Nro. de pedido");
 
                 entity.Property(e => e.RvdNropre)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RVD_NROPRE")
                     .HasComment("Nro presupuesto");
 
@@ -8495,7 +8905,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.RvdPrecio)
-                    .HasColumnType("decimal(11,2)")
+                    .HasPrecision(11, 2)
                     .HasColumnName("RVD_PRECIO")
                     .HasComment("Precio unitario");
 
@@ -8505,7 +8915,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Unidad de medida");
 
                 entity.Property(e => e.RvdValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("RVD_VALIVA")
                     .HasComment("Alicuota de IVA");
 
@@ -8523,7 +8933,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("ret_client");
 
-                entity.HasComment("Retenciones de clientes");
+                entity.HasComment("Retenciones de clientes")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.RtcCodcli, "fk_ret_client_clientes_idx");
 
@@ -8532,7 +8944,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                 entity.Property(e => e.RtcNromov).HasColumnName("RTC_NROMOV");
 
                 entity.Property(e => e.RtcCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("RTC_CODCLI")
                     .HasComment("Codigo de cliente");
 
@@ -8549,12 +8961,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de retencion");
 
                 entity.Property(e => e.RtcImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RTC_IMPRET")
                     .HasComment("Importe de retencion");
 
                 entity.Property(e => e.RtcNrorec)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RTC_NROREC")
                     .HasComment("Nro. de recibo");
 
@@ -8582,7 +8994,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("ret_provee");
 
-                entity.HasComment("Retenciones  Proveedores");
+                entity.HasComment("Retenciones  Proveedores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.RtpCodpro, "fk_ret_client_PROVEEDORES_idx");
 
@@ -8607,17 +9021,17 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de retencion");
 
                 entity.Property(e => e.RtpImpret)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("RTP_IMPRET")
                     .HasComment("Importe de retencion");
 
                 entity.Property(e => e.RtpNrofac)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RTP_NROFAC")
                     .HasComment("Nro de factura");
 
                 entity.Property(e => e.RtpNrorec)
-                    .HasColumnType("decimal(12,0)")
+                    .HasPrecision(12)
                     .HasColumnName("RTP_NROREC")
                     .HasComment("Nro. de recibo");
 
@@ -8644,9 +9058,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("retenciones");
 
-                entity.HasComment("tipos de retenciones");
+                entity.HasComment("tipos de retenciones")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.RetCodret)
+                    .ValueGeneratedNever()
                     .HasColumnName("RET_CODRET")
                     .HasComment("Codigo de retencion");
 
@@ -8666,7 +9083,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.RetPorcen)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("RET_PORCEN")
                     .HasComment("Porcentaje");
             });
@@ -8678,7 +9095,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("rubros");
 
-                entity.HasComment("Rubros");
+                entity.HasComment("Rubros")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.RubIdweb, "IdWeb")
                     .IsUnique();
@@ -8700,7 +9119,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripcion");
 
                 entity.Property(e => e.RubIdweb)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("RUB_IDWEB")
                     .HasComment("Id");
 
@@ -8713,9 +9131,13 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<SgiGrup>(entity =>
             {
                 entity.HasKey(e => new { e.Cgr, e.Csg })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("sgi_grup");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Cgr)
                     .HasMaxLength(15)
@@ -8742,16 +9164,16 @@ namespace ProyectoFinalElectricidadSeret.Data
             {
                 entity.ToTable("stock");
 
-                entity.HasComment("Copia articulos");
+                entity.HasComment("Copia articulos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.ArtCodart, "fk_stock_articulos_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.ArtCanped)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_CANPED")
                     .HasComment("Cantidad de articulos pedidos");
 
@@ -8822,7 +9244,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Articulo Compuesto - Si es true");
 
                 entity.Property(e => e.ArtComvta)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_COMVTA")
                     .HasComment("Comisión s/ventas");
 
@@ -8855,12 +9277,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Art. disponible p/comercialización");
 
                 entity.Property(e => e.ArtDtocom)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("ART_DTOCOM")
                     .HasComment("Descuento s/precio de lista en compras");
 
                 entity.Property(e => e.ArtDtovta)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_DTOVTA")
                     .HasComment("Descuento p /ventas");
 
@@ -8878,7 +9300,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Dirección de imgen asociada");
 
                 entity.Property(e => e.ArtImpues)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_IMPUES")
                     .HasComment("Impuesto interno sobre el articulo");
 
@@ -8888,7 +9310,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.ArtPrecos)
-                    .HasColumnType("decimal(13,3)")
+                    .HasPrecision(13, 3)
                     .HasColumnName("ART_PRECOS")
                     .HasComment("Precio de costo s/iva");
 
@@ -8897,22 +9319,22 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Articulo en promocion: 0=no, 1=si");
 
                 entity.Property(e => e.ArtStoact)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOACT")
                     .HasComment("Cantidad en stock actual");
 
                 entity.Property(e => e.ArtStocom)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOCOM")
                     .HasComment("Stock comprometido");
 
                 entity.Property(e => e.ArtStomax)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOMAX")
                     .HasComment("Stock maximo");
 
                 entity.Property(e => e.ArtStomin)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("ART_STOMIN")
                     .HasComment("Stock minimo");
 
@@ -8949,7 +9371,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Usa Nro. de serie");
 
                 entity.Property(e => e.ArtValiva)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("ART_VALIVA")
                     .HasComment("Porcentaje de IVA");
             });
@@ -8961,7 +9383,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("subrubros");
 
-                entity.HasComment("Subrubros");
+                entity.HasComment("Subrubros")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.SruIdweb, "IdWeb")
                     .IsUnique();
@@ -8990,7 +9414,6 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Descripción");
 
                 entity.Property(e => e.SruIdweb)
-                    .HasColumnType("int unsigned")
                     .HasColumnName("SRU_IDWEB")
                     .HasComment("Id");
 
@@ -9013,7 +9436,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("tareas");
 
-                entity.HasComment("Log de errores");
+                entity.HasComment("Log de errores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.TarId, "XPKDI_ERR_M")
                     .IsUnique();
@@ -9027,6 +9452,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasMaxLength(255)
                     .HasColumnName("TAR_DESCRI")
                     .HasComment("Descripcion tarea");
+
+                entity.Property(e => e.TarFechor)
+                    .HasColumnType("timestamp")
+                    .HasColumnName("TAR_FECHOR")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("Fecha y hora");
 
                 entity.Property(e => e.TarModulo)
                     .HasMaxLength(12)
@@ -9051,9 +9482,13 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("tarjetas");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.HasIndex(e => e.TarCodban, "fk_tarjetas_bancos_idx");
 
                 entity.Property(e => e.TarCodtar)
+                    .ValueGeneratedNever()
                     .HasColumnName("TAR_CODTAR")
                     .HasComment("Codigo de tarjeta");
 
@@ -9089,7 +9524,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("tarjrec");
 
-                entity.HasComment("Pagos con tarjeta recibidos");
+                entity.HasComment("Pagos con tarjeta recibidos")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.TjrCodcli, "fk_tarjrec_clientes_idx");
 
@@ -9104,7 +9541,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Cantidad de cuotas");
 
                 entity.Property(e => e.TjrCodcli)
-                    .HasColumnType("decimal(6,0)")
+                    .HasPrecision(6)
                     .HasColumnName("TJR_CODCLI")
                     .HasComment("Cod. cliente que entrega");
 
@@ -9132,12 +9569,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de acreditacion");
 
                 entity.Property(e => e.TjrImpacre)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("TJR_IMPACRE")
                     .HasComment("Importe acreditado");
 
                 entity.Property(e => e.TjrImppgo)
-                    .HasColumnType("decimal(13,2)")
+                    .HasPrecision(13, 2)
                     .HasColumnName("TJR_IMPPGO")
                     .HasComment("Importe");
 
@@ -9176,6 +9613,9 @@ namespace ProyectoFinalElectricidadSeret.Data
             {
                 entity.ToTable("test_table");
 
+                entity.HasCharSet("latin1")
+                    .UseCollation("latin1_swedish_ci");
+
                 entity.HasIndex(e => e.Name, "name");
 
                 entity.HasIndex(e => e.Other, "other_key");
@@ -9198,9 +9638,13 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("tipoart");
 
-                entity.HasComment("Tipo de articulo");
+                entity.HasComment("Tipo de articulo")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.TarCodtar).HasColumnName("TAR_CODTAR");
+                entity.Property(e => e.TarCodtar)
+                    .ValueGeneratedNever()
+                    .HasColumnName("TAR_CODTAR");
 
                 entity.Property(e => e.TarDescri)
                     .HasMaxLength(20)
@@ -9214,7 +9658,11 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("tiposdocumentos");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.TdoCodtdo)
+                    .ValueGeneratedNever()
                     .HasColumnName("TDO_CODTDO")
                     .HasComment("Codigo tipo documento");
 
@@ -9235,7 +9683,12 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("transportes");
 
-                entity.Property(e => e.TraCodtra).HasColumnName("TRA_CODTRA");
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
+                entity.Property(e => e.TraCodtra)
+                    .ValueGeneratedNever()
+                    .HasColumnName("TRA_CODTRA");
 
                 entity.Property(e => e.TraCelula)
                     .HasMaxLength(15)
@@ -9270,7 +9723,9 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("unimed");
 
-                entity.HasComment("Unidades de medida");
+                entity.HasComment("Unidades de medida")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UmeDescri)
                     .HasMaxLength(6)
@@ -9281,11 +9736,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<UsuaMenu>(entity =>
             {
                 entity.HasKey(e => new { e.UymCodmen, e.UymCodusu, e.UymNumopc })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("usua_menu");
 
-                entity.HasComment("Usuarios y menus");
+                entity.HasComment("Usuarios y menus")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.UymCodusu, "fk_usua_menu_usuarios_idx");
 
@@ -9320,11 +9778,14 @@ namespace ProyectoFinalElectricidadSeret.Data
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.HasKey(e => new { e.UsuCodusu, e.UsuNombre })
-                    .HasName("PRIMARY");
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("usuarios");
 
-                entity.HasComment("Usuarios del sistema");
+                entity.HasComment("Usuarios del sistema")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UsuCodusu)
                     .HasColumnName("USU_CODUSU")
@@ -9365,7 +9826,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.UsuPin)
-                    .HasColumnType("decimal(4,0)")
+                    .HasPrecision(4)
                     .HasColumnName("USU_PIN")
                     .HasComment("Pin");
             });
@@ -9377,14 +9838,17 @@ namespace ProyectoFinalElectricidadSeret.Data
 
                 entity.ToTable("vendedores");
 
-                entity.HasComment("Vendedores");
+                entity.HasComment("Vendedores")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.VenCodven)
+                    .ValueGeneratedNever()
                     .HasColumnName("VEN_CODVEN")
                     .HasComment("Codigo de vendedor");
 
                 entity.Property(e => e.VenComisi)
-                    .HasColumnType("decimal(5,2)")
+                    .HasPrecision(5, 2)
                     .HasColumnName("VEN_COMISI")
                     .HasComment("Porcent. comision");
 
@@ -9404,12 +9868,12 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Fecha de ingreso");
 
                 entity.Property(e => e.VenNroleg)
-                    .HasColumnType("decimal(10,0)")
+                    .HasPrecision(10)
                     .HasColumnName("VEN_NROLEG")
                     .HasComment("Nro. de legajo");
 
                 entity.Property(e => e.VenNrotar)
-                    .HasColumnType("decimal(10,0)")
+                    .HasPrecision(10)
                     .HasColumnName("VEN_NROTAR")
                     .HasComment("Nro. de tarjeta");
 
@@ -9419,7 +9883,7 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasComment("Observaciones");
 
                 entity.Property(e => e.VenPin)
-                    .HasColumnType("decimal(4,0)")
+                    .HasPrecision(4)
                     .HasColumnName("VEN_PIN")
                     .HasComment("PIN");
             });

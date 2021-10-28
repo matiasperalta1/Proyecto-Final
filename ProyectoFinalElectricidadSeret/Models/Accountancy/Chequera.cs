@@ -13,7 +13,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal? ChqDesnum { get; set; }
         public decimal? ChqHasnum { get; set; }
         public decimal? ChqUltnum { get; set; }
-        public decimal ChqCodbce { get; set; }
+        public int ChqCodbce { get; set; }
+
         public virtual Banco ChqCodbceNavigation { get; set; }
     }
 }

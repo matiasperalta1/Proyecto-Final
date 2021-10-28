@@ -11,6 +11,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         {
             Clientes = new HashSet<Cliente>();
         }
+
         public int CobCodcob { get; set; }
         public string CobDescri { get; set; }
         public decimal? CobComisi { get; set; }
@@ -19,7 +20,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal? CobNlegaj { get; set; }
         public decimal? CobNtarje { get; set; }
         public string CobObserv { get; set; }
-        public virtual ICollection<Cliente> Clientes { get; set; }
 
+        public virtual ICollection<Cliente> Clientes { get; set; }
     }
 }

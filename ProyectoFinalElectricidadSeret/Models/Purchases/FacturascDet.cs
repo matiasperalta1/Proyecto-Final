@@ -9,7 +9,7 @@ namespace ProyectoFinalElectricidadSeret.Models
     {
         public int FcdCodcom { get; set; }
         public decimal FcdNrofac { get; set; }
-        public decimal FcdCodpro { get; set; }
+        public int FcdCodpro { get; set; }
         public int FcdNrolin { get; set; }
         public string FcdCodart { get; set; }
         public string FcdCodori { get; set; }

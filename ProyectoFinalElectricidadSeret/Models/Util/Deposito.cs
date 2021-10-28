@@ -12,6 +12,7 @@ namespace ProyectoFinalElectricidadSeret.Models
             ArtMovs = new HashSet<ArtMov>();
             ArticStocks = new HashSet<ArticStock>();
             ArticUbics = new HashSet<ArticUbic>();
+            Facturascs = new HashSet<Facturasc>();
             Puestos = new HashSet<Puesto>();
         }
 
@@ -21,7 +22,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual ICollection<ArtMov> ArtMovs { get; set; }
         public virtual ICollection<ArticStock> ArticStocks { get; set; }
         public virtual ICollection<ArticUbic> ArticUbics { get; set; }
-        public virtual ICollection<Puesto> Puestos { get; set; }
         public virtual ICollection<Facturasc> Facturascs { get; set; }
+        public virtual ICollection<Puesto> Puestos { get; set; }
     }
 }

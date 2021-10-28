@@ -37,7 +37,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int FvcCodtra { get; set; }
         public string FvcLugent { get; set; }
         public string FvcLeyend { get; set; }
-        public int FvcAcopio { get; set; }
+        public uint FvcAcopio { get; set; }
         public int FvcCodusu { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string RubCodrub { get; set; }
         public string RubDescri { get; set; }
         public string RubObserv { get; set; }
-        public int RubIdweb { get; set; }
+        public uint RubIdweb { get; set; }
         public byte RubActivo { get; set; }
 
         public virtual ICollection<Articulo> Articulos { get; set; }

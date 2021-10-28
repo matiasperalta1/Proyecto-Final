@@ -14,7 +14,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int TjrCodtar { get; set; }
         public decimal TjrImppgo { get; set; }
         public int? TjrCancuo { get; set; }
-        public int? TjrCodcli { get; set; }
+        public decimal? TjrCodcli { get; set; }
         public string TjrDescli { get; set; }
         public string TjrRespon { get; set; }
         public DateTime? TjrFecacr { get; set; }
@@ -22,6 +22,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int? TjrCuoacre { get; set; }
         public string TjrEstado { get; set; }
         public string TjrObserv { get; set; }
+
         public virtual Tarjeta TjrCodtarNavigation { get; set; }
     }
 }

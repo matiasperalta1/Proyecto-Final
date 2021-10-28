@@ -10,5 +10,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int AriId { get; set; }
         public string AriCodart { get; set; }
         public string AriError { get; set; }
+        public DateTime AriFechor { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public DateTime? RtpFecret { get; set; }
         public decimal RtpImpret { get; set; }
 
-        public virtual Retencione RtpCodretNavigation { get; set; }
         public virtual Proveedore RtpCodproNavigation { get; set; }
+        public virtual Retencione RtpCodretNavigation { get; set; }
     }
 }

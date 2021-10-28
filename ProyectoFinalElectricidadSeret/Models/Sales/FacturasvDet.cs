@@ -30,6 +30,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int FvdNrolre { get; set; }
         public string FvdEstado { get; set; }
         public string FvdObserv { get; set; }
-        public int FvdLinaco { get; set; }
+        public uint FvdLinaco { get; set; }
     }
 }

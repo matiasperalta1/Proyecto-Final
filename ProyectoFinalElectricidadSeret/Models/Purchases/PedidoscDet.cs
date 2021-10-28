@@ -30,7 +30,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal PcdNrofac { get; set; }
         public string PcdEstado { get; set; }
         public string PcdObserv { get; set; }
-        public int PcdCodmon { get; set; }
+        public uint PcdCodmon { get; set; }
         public int PcdLinaco { get; set; }
         public string PcdTipaco { get; set; }
 

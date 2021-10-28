@@ -10,12 +10,12 @@ namespace ProyectoFinalElectricidadSeret.Models
         public Proveedore()
         {
             ArtProves = new HashSet<ArtProve>();
-            Articulos = new HashSet<Articulo>();
             ArticTmps = new HashSet<ArticTmp>();
+            Articulos = new HashSet<Articulo>();
+            DepbancPros = new HashSet<DepbancPro>();
             NovedadesProveeds = new HashSet<NovedadesProveed>();
             ProveeContacs = new HashSet<ProveeContac>();
             Reclamos = new HashSet<Reclamo>();
-            DepbancPros = new HashSet<DepbancPro>();
             RetProvees = new HashSet<RetProvee>();
         }
 
@@ -32,6 +32,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int ProCodciv { get; set; }
         public string ProCuit { get; set; }
         public string ProIngbru { get; set; }
+        public DateTime ProFecalt { get; set; }
         public string ProCai { get; set; }
         public DateTime? ProVencai { get; set; }
         public string ProConcep { get; set; }
@@ -39,7 +40,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal ProSaldo { get; set; }
         public int? ProCodmon { get; set; }
         public string ProObserv { get; set; }
-        public byte? ProCtacte { get; set; }
+        public sbyte? ProCtacte { get; set; }
         public string ProEstado { get; set; }
         public decimal? ProLimcre { get; set; }
         public DateTime? ProFecufr { get; set; }
@@ -53,12 +54,12 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual Localidade ProCodlocNavigation { get; set; }
         public virtual Provincia ProCodprvNavigation { get; set; }
         public virtual ICollection<ArtProve> ArtProves { get; set; }
+        public virtual ICollection<ArticTmp> ArticTmps { get; set; }
         public virtual ICollection<Articulo> Articulos { get; set; }
+        public virtual ICollection<DepbancPro> DepbancPros { get; set; }
         public virtual ICollection<NovedadesProveed> NovedadesProveeds { get; set; }
         public virtual ICollection<ProveeContac> ProveeContacs { get; set; }
         public virtual ICollection<Reclamo> Reclamos { get; set; }
-        public virtual ICollection<ArticTmp> ArticTmps { get; set; }
-        public virtual ICollection<DepbancPro> DepbancPros { get; set; }
         public virtual ICollection<RetProvee> RetProvees { get; set; }
     }
 }

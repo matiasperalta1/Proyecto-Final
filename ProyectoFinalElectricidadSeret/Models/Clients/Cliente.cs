@@ -32,7 +32,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public DateTime? CliFecalt { get; set; }
         public int CliCodcpa { get; set; }
         public decimal CliSaldo { get; set; }
-        public int CliCodcac { get; set; }
+        public uint CliCodcac { get; set; }
         public string CliEstado { get; set; }
         public int? CliCodcuc { get; set; }
         public int? CliCodcob { get; set; }
@@ -49,18 +49,18 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string CliObserv { get; set; }
         public byte? CliCtacte { get; set; }
         public bool? CliRemito { get; set; }
-        public int CliCodtra { get; set; }
+        public uint CliCodtra { get; set; }
         public string CliCodpos { get; set; }
         public int CliCodtdo { get; set; }
 
         public virtual Catclient CliCodcacNavigation { get; set; }
         public virtual Condiva CliCodcivNavigation { get; set; }
-        public virtual Condpago CliCodcpaNavigation { get; set; }
-        public virtual Localidade CliCodlocNavigation { get; set; }
-        public virtual Provincia CliCodprvNavigation { get; set; }
         public virtual Cobradore CliCodcobNavigation { get; set; }
+        public virtual Condpago CliCodcpaNavigation { get; set; }
         public virtual Listapre CliCodlisNavigation { get; set; }
+        public virtual Localidade CliCodlocNavigation { get; set; }
         public virtual Moneda CliCodmonNavigation { get; set; }
+        public virtual Provincia CliCodprvNavigation { get; set; }
         public virtual Tiposdocumento CliCodtdoNavigation { get; set; }
         public virtual Vendedore CliCodvenNavigation { get; set; }
         public virtual ICollection<ClienContac> ClienContacs { get; set; }

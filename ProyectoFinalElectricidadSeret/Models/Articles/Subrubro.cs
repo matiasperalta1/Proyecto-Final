@@ -17,7 +17,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string SruDescri { get; set; }
         public string SruObserv { get; set; }
         public string SruCodrub { get; set; }
-        public int SruIdweb { get; set; }
+        public uint SruIdweb { get; set; }
         public byte SruActivo { get; set; }
 
         public virtual Rubro SruCodrubNavigation { get; set; }
