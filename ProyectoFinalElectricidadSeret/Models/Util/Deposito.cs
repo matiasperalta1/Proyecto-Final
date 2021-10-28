@@ -22,5 +22,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual ICollection<ArticStock> ArticStocks { get; set; }
         public virtual ICollection<ArticUbic> ArticUbics { get; set; }
         public virtual ICollection<Puesto> Puestos { get; set; }
+        public virtual ICollection<Facturasc> Facturascs { get; set; }
     }
 }

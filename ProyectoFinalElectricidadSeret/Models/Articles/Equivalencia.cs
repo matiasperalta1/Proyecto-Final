@@ -10,5 +10,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string EquCodart { get; set; }
         public string EquCodequ { get; set; }
         public string EquObserv { get; set; }
+        public virtual Articulo EquCodartNavigation { get; set; }
     }
 }

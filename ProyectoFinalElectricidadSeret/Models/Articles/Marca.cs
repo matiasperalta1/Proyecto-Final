@@ -11,6 +11,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         {
             Articulos = new HashSet<Articulo>();
             Reglapres = new HashSet<Reglapre>();
+            ArticActs = new HashSet<ArticAct>();
+            ArticTmps = new HashSet<ArticTmp>();
         }
 
         public string MarCodmar { get; set; }
@@ -21,5 +23,7 @@ namespace ProyectoFinalElectricidadSeret.Models
 
         public virtual ICollection<Articulo> Articulos { get; set; }
         public virtual ICollection<Reglapre> Reglapres { get; set; }
+        public virtual ICollection<ArticAct> ArticActs { get; set; }
+        public virtual ICollection<ArticTmp> ArticTmps { get; set; }
     }
 }

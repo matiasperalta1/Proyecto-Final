@@ -15,5 +15,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int? DepCodpro { get; set; }
         public string DepDespro { get; set; }
         public string DepObserv { get; set; }
+        public virtual Proveedore DepCodproNavigation { get; set; }
     }
 }

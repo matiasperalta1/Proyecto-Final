@@ -22,5 +22,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int? TjrCuoacre { get; set; }
         public string TjrEstado { get; set; }
         public string TjrObserv { get; set; }
+        public virtual Tarjeta TjrCodtarNavigation { get; set; }
     }
 }

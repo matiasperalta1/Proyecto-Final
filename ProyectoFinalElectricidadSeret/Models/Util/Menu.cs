@@ -7,6 +7,10 @@ namespace ProyectoFinalElectricidadSeret.Models
 {
     public partial class Menu
     {
+        public Menu()
+        {
+            UsuaMenus = new HashSet<UsuaMenu>();
+        }
         public int MenCodmen { get; set; }
         public string MenMenu { get; set; }
         public short MenMenord { get; set; }
@@ -16,5 +20,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public short MenSsbord { get; set; }
         public string MenFormul { get; set; }
         public string MenObserv { get; set; }
+        public virtual ICollection<UsuaMenu> UsuaMenus { get; set; }
     }
 }

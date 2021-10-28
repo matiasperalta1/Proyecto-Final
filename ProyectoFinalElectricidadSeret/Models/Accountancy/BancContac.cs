@@ -9,5 +9,7 @@ namespace ProyectoFinalElectricidadSeret.Models
     {
         public decimal BycCodbce { get; set; }
         public decimal BycCodcon { get; set; }
+        public virtual Banco BycCodbceNavigation { get; set; }
+        public virtual Contacto BycCodconNavigation { get; set; }
     }
 }

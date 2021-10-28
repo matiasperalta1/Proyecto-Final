@@ -11,9 +11,12 @@ namespace ProyectoFinalElectricidadSeret.Models
         {
             ArtProves = new HashSet<ArtProve>();
             Articulos = new HashSet<Articulo>();
+            ArticTmps = new HashSet<ArticTmp>();
             NovedadesProveeds = new HashSet<NovedadesProveed>();
             ProveeContacs = new HashSet<ProveeContac>();
             Reclamos = new HashSet<Reclamo>();
+            DepbancPros = new HashSet<DepbancPro>();
+            RetProvees = new HashSet<RetProvee>();
         }
 
         public int ProCodpro { get; set; }
@@ -54,5 +57,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual ICollection<NovedadesProveed> NovedadesProveeds { get; set; }
         public virtual ICollection<ProveeContac> ProveeContacs { get; set; }
         public virtual ICollection<Reclamo> Reclamos { get; set; }
+        public virtual ICollection<ArticTmp> ArticTmps { get; set; }
+        public virtual ICollection<DepbancPro> DepbancPros { get; set; }
+        public virtual ICollection<RetProvee> RetProvees { get; set; }
     }
 }

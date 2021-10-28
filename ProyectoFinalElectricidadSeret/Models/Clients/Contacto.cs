@@ -11,6 +11,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         {
             ClienContacs = new HashSet<ClienContac>();
             ProveeContacs = new HashSet<ProveeContac>();
+            BancContacs = new HashSet<BancContac>();
         }
 
         public decimal ConCodcon { get; set; }
@@ -29,5 +30,6 @@ namespace ProyectoFinalElectricidadSeret.Models
 
         public virtual ICollection<ClienContac> ClienContacs { get; set; }
         public virtual ICollection<ProveeContac> ProveeContacs { get; set; }
+        public virtual ICollection<BancContac> BancContacs { get; set; }
     }
 }

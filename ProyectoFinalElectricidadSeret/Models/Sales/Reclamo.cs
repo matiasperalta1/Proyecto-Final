@@ -34,6 +34,7 @@ namespace ProyectoFinalElectricidadSeret.Models
 
         public virtual Cliente RecCodcliNavigation { get; set; }
         public virtual Proveedore RecCodproNavigation { get; set; }
+        public virtual Articulo RecCodartNavigation { get; set; }
         public virtual ICollection<ReclMov> ReclMovs { get; set; }
     }
 }

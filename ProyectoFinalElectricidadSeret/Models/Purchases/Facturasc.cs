@@ -50,5 +50,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int FccCodusu { get; set; }
 
         public virtual Concepto FccCodcopNavigation { get; set; }
+        public virtual Condpago FccCodcpaNavigation { get; set; }
+        public virtual Deposito FccCoddepNavigation { get; set; }
     }
 }

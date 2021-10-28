@@ -9,12 +9,15 @@ namespace ProyectoFinalElectricidadSeret.Models
     {
         public Articulo()
         {
+            ArticAconds = new HashSet<ArticAcond>();
             ArtMovs = new HashSet<ArtMov>();
             ArtProves = new HashSet<ArtProve>();
             ArticStocks = new HashSet<ArticStock>();
             ArticUbics = new HashSet<ArticUbic>();
             Precios = new HashSet<Precio>();
             Reglapres = new HashSet<Reglapre>();
+            CarritoDets = new HashSet<CarritoDet>();
+            Reclamos = new HashSet<Reclamo>();
         }
 
         public string ArtCodart { get; set; }
@@ -89,11 +92,15 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual Rubro ArtCodrubNavigation { get; set; }
         public virtual Subrubro ArtCodsruNavigation { get; set; }
         public virtual Tipoart ArtCodtarNavigation { get; set; }
+        public virtual Equivalencia Equivalencia { get; set; }
         public virtual ICollection<ArtMov> ArtMovs { get; set; }
         public virtual ICollection<ArtProve> ArtProves { get; set; }
         public virtual ICollection<ArticStock> ArticStocks { get; set; }
         public virtual ICollection<ArticUbic> ArticUbics { get; set; }
         public virtual ICollection<Precio> Precios { get; set; }
         public virtual ICollection<Reglapre> Reglapres { get; set; }
+        public virtual ICollection<ArticAcond> ArticAconds { get; set; }
+        public virtual ICollection<CarritoDet> CarritoDets { get; set; }
+        public virtual ICollection<Reclamo> Reclamos { get; set; }
     }
 }

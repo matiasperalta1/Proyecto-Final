@@ -13,5 +13,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public double CadCantid { get; set; }
 
         public virtual Carrito CadCar { get; set; }
+        public virtual Articulo CadCodartNavigation { get; set; }
     }
 }

@@ -20,5 +20,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int? CbaCodcuc { get; set; }
         public string CbaObserv { get; set; }
         public int? CbaCodban { get; set; }
+        public virtual Banco CbaCodbanNavigation { get; set; }
+        public virtual Moneda CbaCodmonNavigation { get; set; }
     }
 }

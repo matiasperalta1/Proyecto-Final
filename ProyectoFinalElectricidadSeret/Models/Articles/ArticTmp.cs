@@ -18,5 +18,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal TmpDtocom { get; set; }
         public DateTime? TmpFecact { get; set; }
         public string TmpTexto1 { get; set; }
+        public virtual Marca TmpCodmarNavigation { get; set; }
+        public virtual Proveedore TmpCodproNavigation { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace ProyectoFinalElectricidadSeret.Models
             CobranzasClientes = new HashSet<CobranzasCliente>();
             NovedadesClientes = new HashSet<NovedadesCliente>();
             Reclamos = new HashSet<Reclamo>();
+            RetClients = new HashSet<RetClient>();
         }
 
         public decimal CliCodcli { get; set; }
@@ -57,9 +58,15 @@ namespace ProyectoFinalElectricidadSeret.Models
         public virtual Condpago CliCodcpaNavigation { get; set; }
         public virtual Localidade CliCodlocNavigation { get; set; }
         public virtual Provincia CliCodprvNavigation { get; set; }
+        public virtual Cobradore CliCodcobNavigation { get; set; }
+        public virtual Listapre CliCodlisNavigation { get; set; }
+        public virtual Moneda CliCodmonNavigation { get; set; }
+        public virtual Tiposdocumento CliCodtdoNavigation { get; set; }
+        public virtual Vendedore CliCodvenNavigation { get; set; }
         public virtual ICollection<ClienContac> ClienContacs { get; set; }
         public virtual ICollection<CobranzasCliente> CobranzasClientes { get; set; }
         public virtual ICollection<NovedadesCliente> NovedadesClientes { get; set; }
         public virtual ICollection<Reclamo> Reclamos { get; set; }
+        public virtual ICollection<RetClient> RetClients { get; set; }
     }
 }

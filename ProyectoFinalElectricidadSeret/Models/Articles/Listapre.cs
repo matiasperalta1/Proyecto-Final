@@ -10,6 +10,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         public Listapre()
         {
             Lisyregs = new HashSet<Lisyreg>();
+            Clientes = new HashSet<Cliente>();
+            Condpagos = new HashSet<Condpago>();
         }
 
         public int LipCodlis { get; set; }
@@ -23,5 +25,7 @@ namespace ProyectoFinalElectricidadSeret.Models
 
         public virtual Moneda LipCodmonNavigation { get; set; }
         public virtual ICollection<Lisyreg> Lisyregs { get; set; }
+        public virtual ICollection<Cliente> Clientes { get; set; }
+        public virtual ICollection<Condpago> Condpagos { get; set; }
     }
 }

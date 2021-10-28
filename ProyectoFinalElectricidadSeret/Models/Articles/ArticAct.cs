@@ -10,5 +10,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public string TmpCodmar { get; set; }
         public string TmpCodori { get; set; }
         public decimal TmpPrecos { get; set; }
+
+        public virtual Marca TmpCodmarNavigation { get; set; }
     }
 }

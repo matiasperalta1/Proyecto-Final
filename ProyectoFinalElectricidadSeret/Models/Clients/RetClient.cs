@@ -17,5 +17,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal RtcImpret { get; set; }
 
         public virtual Retencione RtcCodretNavigation { get; set; }
+        public virtual Cliente RtcCodcliNavigation { get; set; }
     }
 }

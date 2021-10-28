@@ -14,5 +14,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal AyaCant { get; set; }
         public string AyaObserv { get; set; }
         public int AyaCoddep { get; set; }
+
+        public virtual Articulo AyaCodartNavigation { get; set; }
     }
 }

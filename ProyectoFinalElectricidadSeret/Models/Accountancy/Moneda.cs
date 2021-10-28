@@ -10,7 +10,9 @@ namespace ProyectoFinalElectricidadSeret.Models
         public Moneda()
         {
             Articulos = new HashSet<Articulo>();
-            Listapres = new HashSet<Listapre>();
+            Listapres = new HashSet<Listapre>();        
+            Clientes = new HashSet<Cliente>();
+            Ctasbancs = new HashSet<Ctasbanc>();
         }
 
         public int MonCodmon { get; set; }
@@ -21,5 +23,7 @@ namespace ProyectoFinalElectricidadSeret.Models
 
         public virtual ICollection<Articulo> Articulos { get; set; }
         public virtual ICollection<Listapre> Listapres { get; set; }
+        public virtual ICollection<Cliente> Clientes { get; set; }
+        public virtual ICollection<Ctasbanc> Ctasbancs { get; set; }
     }
 }

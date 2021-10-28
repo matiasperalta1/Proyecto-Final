@@ -18,5 +18,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         public decimal RtpImpret { get; set; }
 
         public virtual Retencione RtpCodretNavigation { get; set; }
+        public virtual Proveedore RtpCodproNavigation { get; set; }
     }
 }
