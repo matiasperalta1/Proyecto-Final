@@ -12,14 +12,6 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            @if (Context.Session.GetString("currentUser") != null)
-            {
-                <div id="main">
-                    <button onclick="openNav()" class="btn btn-outline-primary">
-                        &#9776;
-                    </button>
-                </div>
-            }
                 <div class="container">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ElectricidadSeret</a>
                 </div>
@@ -41,25 +33,9 @@
     }
 
 
-    @if (Context.Session.GetString("currentUser") != null)
+    @if (ViewBag.CurrentUser != null)
     { 
-        <div id="mySidebar" class="sidebar">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Active</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-            </ul>
-        </div>
+     
     }
 
     <div class="container">

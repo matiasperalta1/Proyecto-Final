@@ -309,7 +309,6 @@ D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microso
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\MySql.Data.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Ubiety.Dns.Core.dll
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Zstandard.Net.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\MySql.EntityFrameworkCore.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
@@ -448,11 +447,7 @@ D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\runtime
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Usuarios\Login.cshtml.g.cs
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\Create.cshtml.g.cs
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\Delete.cshtml.g.cs
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\Details.cshtml.g.cs
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\Edit.cshtml.g.cs
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\Index.cshtml.g.cs
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\MySqlConnector.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\ZstdNet.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.csproj.AssemblyReference.cache
