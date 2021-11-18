@@ -7,12 +7,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ProyectoFinalElectricidadSeret.Controllers
 {
     public class HomeController : Controller
     {
+        public IEnumerable<MenuItem> Menus { get; set; }
         private readonly ILogger<HomeController> _logger;
+        private UsuaMenusController _UsuaMenusController { get; set; }
         public Usuario CurrentUser { get; set; }
 
         public HomeController(ILogger<HomeController> logger)
@@ -23,14 +26,22 @@ namespace ProyectoFinalElectricidadSeret.Controllers
         public IActionResult Index()
         {
             var currentUsr = HttpContext.Session.GetString("currentUser");
-            if(currentUsr == null)
+
+            if (currentUsr == null)
             {
-                Response.Redirect("Usuarios/Login");
+               return RedirectToAction("Login", "Usuarios");
             }
-            return View();
+            else {
+                CurrentUser = JsonConvert.DeserializeObject<Usuario>(currentUsr);
+                return View(CurrentUser);
+            }
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult NotAvailable()
         {
             return View();
         }

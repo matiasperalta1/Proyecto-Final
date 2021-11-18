@@ -5231,6 +5231,16 @@ namespace ProyectoFinalElectricidadSeret.Data
                     .HasMaxLength(45)
                     .HasColumnName("MEN_SUBMEN")
                     .HasComment("Nombre Submenu");
+                
+                entity.Property(e => e.MenController)
+                    .HasMaxLength(45)
+                    .HasColumnName("MEN_CONTROLLER")
+                    .HasComment("Nombre de Controlador");
+                
+                entity.Property(e => e.MenAction)
+                    .HasMaxLength(45)
+                    .HasColumnName("MEN_ACTION")
+                    .HasComment("Nombre Nombre de Action");
             });
 
             modelBuilder.Entity<MenuBak>(entity =>

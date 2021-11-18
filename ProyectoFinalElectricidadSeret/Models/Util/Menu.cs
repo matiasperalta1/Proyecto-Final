@@ -21,6 +21,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         public short MenSsbord { get; set; }
         public string MenFormul { get; set; }
         public string MenObserv { get; set; }
+        public string MenController { get; set; }
+        public string MenAction { get; set; }
 
         public virtual ICollection<UsuaMenu> UsuaMenus { get; set; }
     }

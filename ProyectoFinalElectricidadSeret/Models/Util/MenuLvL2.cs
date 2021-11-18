@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProyectoFinalElectricidadSeret.Controllers.Util.Menus
+namespace ProyectoFinalElectricidadSeret.Models
 {
     public class MenuLvL2
     {

@@ -1,4 +1,4 @@
-﻿@model Usuario
+﻿@model ProyectoFinalElectricidadSeret.Models.Usuario
 
 
 <div class="container border p-lg-4">
@@ -7,13 +7,16 @@
     <div class="row">
         <div class="col-md-4">
             <form asp-controller="Usuarios" asp-action="LoginUser">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label for="UserName" class="control-label">Nombre de Usuario</label>
-                    <input name="UserName" type="text" class="form-control" required />
+                    <label asp-for="UsuNombre" class="control-label"></label>
+                    <input asp-for="UsuNombre" type="text" class="form-control" required />
+                    <span asp-validation-for="UsuNombre" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label for="Password" class="control-label">Contraseña</label>
-                    <input name="Password" type="password" class="form-control" required />
+                    <label asp-for="UsuContras" class="control-label"></label>
+                    <input asp-for="UsuContras" type="text" class="form-control" required />
+                    <span asp-validation-for="UsuContras" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Login" class="btn btn-primary" />
@@ -23,3 +26,6 @@
     </div>
 </div>
 
+@section Scripts{ 
+    @{ <partial name="_ValidationScriptsPartial" />}
+}

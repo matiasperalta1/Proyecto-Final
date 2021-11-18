@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProyectoFinalElectricidadSeret.Controllers.Util.Menus
+namespace ProyectoFinalElectricidadSeret.Models
 {
     public class MenuLvl1
     {
-        public MenuItem Lvl1_MenuItem { get; set; }
+        public string Lvl1_MenuName { get; set; }
+        public int Lvl1_MenuOrder { get; set; }
         public ICollection<MenuLvL2> Lvl2_MenuItems { get; set; }
     }
 }

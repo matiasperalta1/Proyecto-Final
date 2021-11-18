@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProyectoFinalElectricidadSeret.Data;
 using ProyectoFinalElectricidadSeret.Models;
 
@@ -29,27 +30,84 @@ namespace ProyectoFinalElectricidadSeret.Controllers
 
         // GET: Usuario/LoginUser
         [HttpPost]
-        public async Task<IActionResult> LoginUser(string UserName, string Password)
+        public async Task<IActionResult> LoginUser(Usuario usuario)
         {
             if (ModelState.IsValid)
             {
-                var usr = await _context.Usuarios.Where(u => u.UsuNombre == UserName & u.UsuContras == Password).FirstOrDefaultAsync();
+                var usr = await _context.Usuarios.Where(u => u.UsuNombre == usuario.UsuNombre & u.UsuContras == usuario.UsuContras).FirstOrDefaultAsync();
 
                 if (usr == null)
                 {
                     ViewBag.ErrorMessage = "Usuario o Contraseña Incorrectos";
-                    Response.Redirect("Login");
-                    return View("Login");
+                    return RedirectToAction("Login");
                 }
                 else
                 {
-                    ViewBag.CurrentUser = usr;
-                    Response.Redirect("../Home/Index");
-                    return View("../Home/Index");
+                    HttpContext.Session.SetString("currentUser", JsonConvert.SerializeObject(usr));
+                    IEnumerable<MenuLvl1> menus = await GetMenus(usr.UsuCodusu);
+                    HttpContext.Session.SetString("userMenu", JsonConvert.SerializeObject(menus));
+                    return RedirectToAction("Index", "Home");
                 }
             }
-            return View("../Home/Index");
+            return RedirectToAction("Index", "Home");
         }
+
+        public async Task<List<MenuLvl1>> GetMenus(int codUsu)
+        {
+            List<MenuLvl1> menus = new List<MenuLvl1>();
+            IEnumerable<int> menuIds = await _context.UsuaMenus.Where(m => m.UymCodusu == codUsu).Select(m => m.UymCodmen).ToListAsync();
+            IEnumerable<string> menusLvl1 = await _context.Menus.Where(m => menuIds.Contains(m.MenCodmen)).Select(m => m.MenMenu).Distinct().ToListAsync();
+            foreach (string menulvl1 in menusLvl1)
+            {
+                MenuLvl1 menuItem = await MapMenuLvl1(menulvl1, menuIds);
+                menus.Add(menuItem);
+            }
+            return menus;
+        }
+
+        public async Task<MenuLvl1> MapMenuLvl1(string menuName, IEnumerable<int> userIds)
+        {
+            MenuLvl1 menuLvl1 = new MenuLvl1();
+            IEnumerable<Menu> menu = await _context.Menus.Where(m => m.MenMenu == menuName && userIds.Contains(m.MenCodmen)).ToListAsync();
+            menuLvl1.Lvl1_MenuName =  menu.First().MenMenu;
+            menuLvl1.Lvl1_MenuOrder = menu.First().MenMenord;
+            menuLvl1.Lvl2_MenuItems = new List<MenuLvL2>();
+            IEnumerable<string> menusLvl2 = menu.Where(m => m.MenMenu == menuName && userIds.Contains(m.MenCodmen)).Select(m => m.MenSubmen).Distinct();
+            foreach (string menuLvl2 in menusLvl2)
+            {
+                menuLvl1.Lvl2_MenuItems.Add(await MapMenuLvl2(menuName, menuLvl2, userIds));
+            }
+            return menuLvl1;
+        }
+
+        public async Task<MenuLvL2> MapMenuLvl2(string menuiLvl1Name, string menuLvl2Name, IEnumerable<int> userIds)
+        {
+            MenuLvL2 menuLvL2 = new MenuLvL2();
+            menuLvL2.Lvl2_MenuItem = new MenuItem();
+            IEnumerable<Menu> menu = await _context.Menus.Where(m => m.MenSubmen == menuLvl2Name && m.MenMenu==menuiLvl1Name && userIds.Contains(m.MenCodmen)).ToListAsync();
+            menuLvL2.Lvl2_MenuItem.MenuItemName = await _context.Menus.Where(m => m.MenSubmen == menuLvl2Name).Select(m => m.MenSubmen).FirstOrDefaultAsync();
+            menuLvL2.Lvl2_MenuItem.MenuItemOrder = await _context.Menus.Where(m => m.MenSubmen == menuLvl2Name).Select(m => m.MenSbmord).FirstOrDefaultAsync();
+            if (menu.Count() == 1)
+            {
+                menuLvL2.Lvl2_MenuItem.MenuItemAction = menu.First().MenAction;
+                menuLvL2.Lvl2_MenuItem.MenuItemController = menu.First().MenController;
+            }
+            else
+            {
+                menuLvL2.Lvl3_MenuItems = new List<MenuItem>();
+                foreach (Menu subMen in menu)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.MenuItemAction = subMen.MenAction;
+                    menuItem.MenuItemController = subMen.MenController;
+                    menuItem.MenuItemName = subMen.MenSsbmen;
+                    menuItem.MenuItemOrder = subMen.MenSsbord;
+                    menuLvL2.Lvl3_MenuItems.Add(menuItem);
+                }
+            }
+            return menuLvL2;
+        }
+
 
         // GET: Usuarios
         public async Task<IActionResult> Index()
