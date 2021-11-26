@@ -8,9 +8,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProyectoFinalElectricidadSeret</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/font-awesome/css/all.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
     <header>
@@ -35,47 +37,67 @@
         </div>
     }
 
+
+    @if (Context.Session.GetString("userMenu") != null)
+    {
+        IEnumerable<MenuLvl1> menu = JsonConvert.DeserializeObject<IEnumerable<MenuLvl1>>(Context.Session.GetString("userMenu"));
+        foreach (MenuLvl1 menuLvl1 in menu)
+        {
+
+            <ul>
+                <li>
+                    @menuLvl1.Lvl1_MenuName
+                </li>  
+
+                @foreach (MenuLvL2 menuLvL2 in menuLvl1.Lvl2_MenuItems)
+                {
+                    <ul>
+                        <li>
+                            <a asp-controller="@menuLvL2.Lvl2_MenuItem.MenuItemController" asp-action="@menuLvL2.Lvl2_MenuItem.MenuItemAction"> @menuLvL2.Lvl2_MenuItem.MenuItemName</a>
+                        </li>
+                        @if (menuLvL2.Lvl3_MenuItems != null)
+                        {
+                        <ul>
+
+                            @foreach (MenuItem menuLvl3 in menuLvL2.Lvl3_MenuItems)
+                            {
+                                <li>
+                                    <a asp-controller="@menuLvl3.MenuItemController" asp-action="@menuLvl3.MenuItemAction"><strong>@menuLvl3.MenuItemName</strong></a>
+                                </li>
+                            }
+                        </ul>
+                        }
+
+                    </ul>
+                }
+            </ul>
+        }
+    }
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
-            @if (Context.Session.GetString("userMenu") != null)
-            {
-                IEnumerable<MenuLvl1> menu = JsonConvert.DeserializeObject<IEnumerable<MenuLvl1>>(Context.Session.GetString("userMenu"));
-                foreach (MenuLvl1 menuLvl1 in menu)
-                {
-                    <p>@menuLvl1.Lvl1_MenuName</p>
-                    @foreach (MenuLvL2 menuLvL2 in menuLvl1.Lvl2_MenuItems)
-                    {
-                        <p><strong>@menuLvL2.Lvl2_MenuItem.MenuItemName</strong></p>
-                        @if (menuLvL2.Lvl3_MenuItems != null)
-                        {
-                            foreach (MenuItem menuLvl3 in menuLvL2.Lvl3_MenuItems)
-                            {
-                                <a asp-controller="@menuLvl3.MenuItemController" asp-action="@menuLvl3.MenuItemAction"><strong>@menuLvl3.MenuItemName</strong></a>
-                            }
-                        }
-                    }
-                }
-            }
+
         </main>
     </div>
 
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2021 - ProyectoFinalElectricidadSeret - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </div>
-        </footer>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - ProyectoFinalElectricidadSeret - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
 
-        <!-- Popper.JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-        <!-- jQuery Custom Scroller CDN -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-    </body>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
 </html>

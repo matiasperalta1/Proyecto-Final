@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Accountancy\" />
-    <Folder Include="Controllers\Articles\" />
     <Folder Include="Controllers\Clients\" />
     <Folder Include="Controllers\Purchases\" />
     <Folder Include="Controllers\Sales\" />

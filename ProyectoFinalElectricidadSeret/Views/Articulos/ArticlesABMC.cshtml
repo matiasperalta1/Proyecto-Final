@@ -1,0 +1,256 @@
+﻿@model Articulo
+@ViewContext.RouteData.Values["formMode"]
+
+<div class="container">
+
+    <div class="card">
+        <div class="card-body">
+            <form class="row g-3" asp-controller="Articulos" asp-action="GetArticle">
+                <div class="col-auto">
+                    <label asp-for="ArtCodart"></label>
+                    <input type="text" class="form-control" asp-for="ArtCodart">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success align-middle"><i class="fas fa-check"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <button class="btn btn-success">Agregar</button>
+            @if (Model.ArtCodart == null)
+            {
+                <button class="btn btn-secondary" disabled>Editar</button>
+                <button class="btn btn-danger" disabled>Eliminar</button>
+                <button class="btn btn-info" disabled>Imprimir</button>
+            }
+            @if (Model.ArtCodart != null)
+            {
+                <button class="btn btn-secondary">Editar</button>
+                <button class="btn btn-danger">Eliminar</button>
+                <button class="btn btn-info">Imprimir</button>
+            }
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#"
+                       @if(ViewContext.RouteData.DataTokens.ContainsKey("formMode") == false) { 
+                             @:disabled="disabled"
+                        }>Datos Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"
+                       @if(ViewContext.RouteData.DataTokens.ContainsKey("formMode") == false) { 
+                             @:disabled="disabled" 
+                        }>Precios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"
+                      @if(ViewContext.RouteData.DataTokens.ContainsKey("formMode") == false) { 
+                             @:disabled="disabled" 
+                        }>Acondicionamiento y Stock</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       @{ if(ViewContext.RouteData.Values["formMode"] == null) { 
+                             @:disabled="disabled" 
+                        } }>Datos Adicionales</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+
+            <form>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <div class="form-group"
+                             @{ if(ViewContext.RouteData.Values["formMode"] == null) { 
+                                 @:disabled="disabled" 
+                            } }>
+
+                            <label asp-for="ArtCodart"></label>
+                            <input type="text" asp-for="ArtCodart" class="form-control" />
+                            <span asp-validation-for="ArtCodart" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="ArtCodbar"></label>
+                            <input type="text" asp-for="ArtCodbar" class="form-control" />
+                            <span asp-validation-for="ArtCodbar" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="ArtCodori"></label>
+                            <input type="text" asp-for="ArtCodori" class="form-control" />
+                            <span asp-validation-for="ArtCodori" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="ArtDescri"></label>
+                            <input type="text" asp-for="ArtDescri" class="form-control" />
+                            <span asp-validation-for="ArtDescri" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        @if (Model.ArtDispon == true)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="ArtDispon" value="true" id="Available" checked>
+                                <label class="form-check-label" for="Available">
+                                    Disponible para Comercializar
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" value="true" id="Discontinuos" asp-for="ArtDiscon">
+                                <label class="form-check-label" for="Discontinuos">
+                                    Discontinuado
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" value="true" asp-for="ArtDispon" id="Available">
+                                <label class="form-check-label" for="Available">
+                                    Disponible para Comercializar
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" value="true" id="Discontinuos" asp-for="ArtDiscon" checked>
+                                <label class="form-check-label" for="Discontinuos">
+                                    Discontinuado
+                                </label>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="row p-1">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label asp-for="ArtDescri" class="form-label"></label>
+                            <textarea asp-for="ArtDescri" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <label asp-for="ArtCodtar" class="form-label"></label>
+                        <select class="form-select" asp-for="ArtCodtar">
+                            @foreach (Tipoart tipArt in ViewBag.ArticleTypes)
+                            {
+                                if (tipArt.TarCodtar == Model.ArtCodtar)
+                                {
+                                    <option selected value="@tipArt.TarCodtar">@tipArt.TarDescri</option>
+                                }
+                                else
+                                {
+                                    <option value="@tipArt.TarCodtar">@tipArt.TarDescri</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <div class="card">
+                            <div class="card-body">
+                                <label asp-for="ArtCompue" class="form-label"></label>
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(m => m.ArtCompue, 0)
+                                    <label class="form-check-label" for="Unique">
+                                        Articulo Unico
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(m => m.ArtCompue, 1)
+                                    <label class="form-check-label" for="Head">
+                                        Cabecera de Grupo
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(m => m.ArtCompue, 2)
+                                    <label class="form-check-label" for="Member">
+                                        Integrante de Grupo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(m => m.ArtAcondi)
+                            <label class="form-check-label" asp-for="ArtAcondi">
+                                C/ Acondicionamiento
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-5 p-1">
+                    <div class="col-auto">
+                        <label asp-for="ArtCodrub" class="form-label"></label>
+                        @Html.DropDownListFor(
+                            m => m.ArtCodrub,
+                            new SelectList(ViewBag.ArticleCategory, "RubCodrub", "RubDescri"),
+                            TempData["selectedCategory"].ToString(),
+                            new { @class = "form-select" })
+                    </div>
+                    <div class="col-auto">
+
+                        <label asp-for="ArtCodsru" class="form-label"></label>
+                        @Html.DropDownListFor(
+                            m => m.ArtCodsru,
+                            new SelectList(((List<Subrubro>)ViewBag.ArticleSubCategory).Where(s => s.SruCodrub == Model.ArtCodrub),
+                                "SruCodsru", "SruDescri"),
+                            TempData["selectedSubCategory"].ToString(),
+                            new { @class = "form-select" })
+                    </div>
+                    <div class="col-auto">
+                        <label asp-for="ArtCodlin" class="form-label"></label>
+                        @Html.DropDownListFor(
+                            m => m.ArtCodlin,
+                            new SelectList(ViewBag.ArticleLine, "LinCodlin", "LinDescri"),
+                            TempData["selectedLine"].ToString(),
+                            new { @class = "form-select" })
+                    </div>
+                    <div class="col-auto">
+                        <label asp-for="ArtCodmar" class="form-label"></label>
+                        @Html.DropDownListFor(
+                            m => m.ArtCodmar,
+                            new SelectList(ViewBag.ArticleBrand, "MarCodmar", "MarDescri"),
+                            TempData["selectedBrand"].ToString(),
+                            new { @class = "form-select" })
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row justify-content-end p-0">
+                        <div class="col-auto">
+                            <button class="btn btn-secondary">Cancelar</button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-success" type="submit">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

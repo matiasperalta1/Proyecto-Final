@@ -440,7 +440,6 @@ D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\V
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\MySqlConnector.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Pomelo.EntityFrameworkCore.MySql.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\ZstdNet.dll
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.csproj.AssemblyReference.cache
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microsoft.Extensions.Configuration.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microsoft.Extensions.Configuration.Abstractions.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microsoft.Extensions.Configuration.FileExtensions.dll
@@ -459,3 +458,6 @@ D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\System.
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\System.Web.WebPages.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microsoft.Web.Infrastructure.dll
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Home\NotAvailable.cshtml.g.cs
+D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\libman.json
+D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\ArticlesABMC.cshtml.g.cs
+D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.csproj.AssemblyReference.cache

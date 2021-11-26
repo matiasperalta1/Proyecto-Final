@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -19,16 +21,31 @@ namespace ProyectoFinalElectricidadSeret.Models
             Reclamos = new HashSet<Reclamo>();
             Reglapres = new HashSet<Reglapre>();
         }
-
+        [DisplayName("Codigo de Articulo")]
+        [Required]
         public string ArtCodart { get; set; }
+        [DisplayName("Codigo de Barras")]
         public string ArtCodbar { get; set; }
+        [DisplayName("Codigo Externo")]
+        [Required]
         public string ArtCodori { get; set; }
+        [DisplayName("Descripcion")]
+        [Required]
         public string ArtDescri { get; set; }
         public string ArtDescrl { get; set; }
+        [Required]
         public bool ArtDiscon { get; set; }
+        [DisplayName("Linea")]
+        [Required]
         public string ArtCodlin { get; set; }
+        [DisplayName("Rubro")]
+        [Required]
         public string ArtCodrub { get; set; }
+        [DisplayName("Sub Rubro")]
+        [Required]
         public string ArtCodsru { get; set; }
+        [DisplayName("Marca")]
+        [Required]
         public string ArtCodmar { get; set; }
         public int ArtEmbala { get; set; }
         public string ArtUmcomp { get; set; }
@@ -60,12 +77,17 @@ namespace ProyectoFinalElectricidadSeret.Models
         public bool? ArtUsseri { get; set; }
         public bool? ArtPromoc { get; set; }
         public int? ArtEquiva { get; set; }
+        [DisplayName("Tipo de Articulo")]
+        [Required]
         public int ArtCodtar { get; set; }
-        public bool ArtCompue { get; set; }
-        public bool? ArtDispon { get; set; }
+        [DisplayName("Clasificacion")]
+        [Required]
+        public int ArtCompue { get; set; } 
+        [Required]
+        public bool ArtDispon { get; set; }
         public string ArtCodcab { get; set; }
         public byte ArtStover { get; set; }
-        public byte ArtAcondi { get; set; }
+        public bool ArtAcondi { get; set; }
         public string ArtImaux1 { get; set; }
         public string ArtImaux2 { get; set; }
         public string ArtImaux3 { get; set; }
