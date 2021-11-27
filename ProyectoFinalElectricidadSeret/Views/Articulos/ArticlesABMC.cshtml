@@ -20,11 +20,12 @@
             @if (Model.ArtCodart == null)
             {
                 @Html.ActionLink(
-                 "Agregar",
-                 "ArticlesABMC",
-                 "Articulos",
-                 new { mode = "add" },
-                 new { @class = "btn btn-success" })
+                  "Agregar",
+                  "ArticlesABMC",
+                  "Articulos",
+                  new { mode = "add", form = ((string)TempData["FormType"]) },
+                  new { @class = "btn btn-success" }
+                 )
                 <button class="btn btn-secondary" disabled>Editar</button>
                 <button class="btn btn-danger" disabled>Eliminar</button>
 
@@ -32,230 +33,103 @@
             @if (Model.ArtCodart != null)
             {
                 @Html.ActionLink(
-                 "Agregar",
-                 "ArticlesABMC",
-                 "Articulos",
-                 new { mode = "add" },
-                 ((bool)TempData["AddButton"]) ? new { @class = "btn btn-success disabled m-1" } : new { @class = "btn btn-success m-1" })
+                  "Agregar",
+                  "ArticlesABMC",
+                  "Articulos",
+                  new { mode = "add" },
+                  ((bool)TempData["AddButton"]) ? new { @class = "btn btn-success disabled m-1" } : new { @class = "btn btn-success m-1" })
                 @Html.ActionLink(
-                 "Editar",
-                 "ArticlesABMC",
-                 "Articulos",
-                 new { mode = "edit", id = Model.ArtCodart },
-                 ((bool)TempData["ActionButtons"]) ? new { @class = "btn btn-secondary disabled m-1" } : new { @class = "btn btn-secondary m-1" })
+                  "Editar",
+                  "ArticlesABMC",
+                  "Articulos",
+                  new { mode = "edit", id = Model.ArtCodart },
+                  ((bool)TempData["ActionButtons"]) ? new { @class = "btn btn-secondary disabled m-1" } : new { @class = "btn btn-secondary m-1" })
                 @Html.ActionLink(
-                 "Eliminar",
-                 "ArticlesABMC",
-                 "Articulos",
-                 new { mode = "delete", id = Model.ArtCodart },
-                 ((bool)TempData["ActionButtons"]) ? new { @class = "btn btn-danger disabled m-1" } : new { @class = "btn btn-danger m-1" })
+                  "Eliminar",
+                  "ArticlesABMC",
+                  "Articulos",
+                  new { mode = "delete", id = Model.ArtCodart },
+                  ((bool)TempData["ActionButtons"]) ? new { @class = "btn btn-danger disabled m-1" } : new { @class = "btn btn-danger m-1" })
             }
         </div>
     </div>
 
     <div class="card m-1">
         <div class="card-header">
-
             <ul class="nav nav-tabs">
+            @if (Model.ArtCodart == null && ((bool)TempData["FormMode"]) != false)
+            {
+               <li class="nav-item">
+                   <button class="nav-link disabled">Datos Generales</button>
+               </li>
+               <li class="nav-item">
+                   <button class="nav-link disabled">Precios</button>
+               </li>
+               <li class="nav-item">
+                   <button class="nav-link disabled">Acondicionamiento y Stock</button>
+               </li>
+               <li class="nav-item">
+                   <button class="nav-link disabled">Datos Adicionales</button>
+               </li>
+            }
+            else
+            {
+            <li class="nav-item">
+                @Html.ActionLink(
+                         "Datos Generales",
+                         "ChangeMode",
+                         "Articulos",
+                         new { mode = "generalData" },
+                         ((string)TempData["FormType"]) == "priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
+            </li>
                 <li class="nav-item">
-                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link active'") class="nav-link active" aria-current="page">Datos Generales</button>
+                    @Html.ActionLink(
+                             "Precios",
+                             "ChangeMode",
+                             "Articulos",
+                             new {mode="priceData" },
+                             ((string)TempData["FormType"])=="priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
                 </li>
                 <li class="nav-item">
-                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Precios</button>
+                    @Html.ActionLink(
+                         "Acondicionamiento y Stock",
+                         "ChangeMode",
+                         "Articulos",
+                         new { mode = "generalData" },
+                         ((string)TempData["FormType"]) == "stockData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
                 </li>
                 <li class="nav-item">
-                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Acondicionamiento y Stock</button>
+                    @Html.ActionLink(
+                         "Datos Adicionales",
+                         "ChangeMode",
+                         "Articulos",
+                         new { mode = "adicionalData" },
+                         ((string)TempData["FormType"]) == "priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
                 </li>
-                <li class="nav-item">
-                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Datos Adicionales</button>
-                </li>
+            }
             </ul>
         </div>
-        <form>
-            <div class="card-body">
-
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="row p-1">
-                    <div class="col-auto">
-                        <div class="form-group">
-
-                            <label asp-for="ArtCodart"></label>
-                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtCodart + "'" : "") type="text" asp-for="ArtCodart" class="form-control" />
-                            <span asp-validation-for="ArtCodart" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="form-group">
-                            <label asp-for="ArtCodbar"></label>
-                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtCodbar + "'" : "") type="text" asp-for="ArtCodbar" class="form-control" />
-                            <span asp-validation-for="ArtCodbar" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="form-group">
-                            <label asp-for="ArtCodori"></label>
-                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtCodori + "'" : "") type="text" asp-for="ArtCodori" class="form-control" />
-                            <span asp-validation-for="ArtCodori" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row p-1">
-                    <div class="col-auto">
-                        <div class="form-group">
-                            <label asp-for="ArtDescri"></label>
-                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtDescri + "'" : "") class="form-control" type="text" asp-for="ArtDescri" />
-                            <span asp-validation-for="ArtDescri" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        @if (Model.ArtDispon == true)
-                        {
-                            <div class="form-check">
-                                <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" asp-for="ArtDispon" value="true" id="Available" checked>
-                                <label class="form-check-label" for="Available">
-                                    Disponible para Comercializar
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" value="true" id="Discontinuos" asp-for="ArtDiscon">
-                                <label class="form-check-label" for="Discontinuos">
-                                    Discontinuado
-                                </label>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="form-check">
-                                <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" value="true" asp-for="ArtDispon" id="Available">
-                                <label class="form-check-label" for="Available">
-                                    Disponible para Comercializar
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" value="true" id="Discontinuos" asp-for="ArtDiscon" checked>
-                                <label class="form-check-label" for="Discontinuos">
-                                    Discontinuado
-                                </label>
-                            </div>
-                        }
-
-                    </div>
-                </div>
-
-                <div class="row p-1">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label asp-for="ArtDescrl" class="form-label"></label>
-                            <textarea @Html.Raw(((bool)TempData["FormMode"]) ? "readonly" : "") asp-for="ArtDescri" class="form-control" rows="5">@Model.ArtDescrl</textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row p-1">
-                    <div class="col-auto">
-                        <label asp-for="ArtCodtar" class="form-label"></label>
-                        <select @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-select" asp-for="ArtCodtar">
-                            @foreach (Tipoart tipArt in ViewBag.ArticleTypes)
-                            {
-                                if (tipArt.TarCodtar == Model.ArtCodtar)
-                                {
-                                    <option selected value="@tipArt.TarCodtar">@tipArt.TarDescri</option>
-                                }
-                                else
-                                {
-                                    <option value="@tipArt.TarCodtar">@tipArt.TarDescri</option>
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-auto">
-                        <div class="card">
-                            <div class="card-body">
-                                <label asp-for="ArtCompue" class="form-label"></label>
-                                <div class="form-check">
-                                    @Html.RadioButtonFor(m => m.ArtCompue, 0, ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
-                                    <label class="form-check-label" for="Unique">
-                                        Articulo Unico
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    @Html.RadioButtonFor(m => m.ArtCompue, 1, ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
-                                    <label class="form-check-label" for="Head">
-                                        Cabecera de Grupo
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    @Html.RadioButtonFor(m => m.ArtCompue, 2, ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
-                                    <label class="form-check-label" for="Member">
-                                        Integrante de Grupo
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="form-check">
-                            @Html.CheckBoxFor(m => m.ArtAcondi,
-                                ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
-                            <label class="form-check-label" asp-for="ArtAcondi">
-                                C/ Acondicionamiento
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row row-cols-5 p-1">
-                    <div class="col-auto">
-                        <label asp-for="ArtCodrub" class="form-label"></label>
-                        @Html.DropDownListFor(
-                            m => m.ArtCodrub,
-                            new SelectList(ViewBag.ArticleCategory, "RubCodrub", "RubDescri"),
-                            TempData["selectedCategory"].ToString(),
-                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
-
-                    </div>
-                    <div class="col-auto">
-
-                        <label asp-for="ArtCodsru" class="form-label"></label>
-                        @Html.DropDownListFor(
-                            m => m.ArtCodsru,
-                            new SelectList(((List<Subrubro>)ViewBag.ArticleSubCategory).Where(s => s.SruCodrub == Model.ArtCodrub),
-                                "SruCodsru", "SruDescri"),
-                            TempData["selectedSubCategory"].ToString(),
-                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
-                    </div>
-                    <div class="col-auto">
-                        <label asp-for="ArtCodlin" class="form-label"></label>
-                        @Html.DropDownListFor(
-                            m => m.ArtCodlin,
-                            new SelectList(ViewBag.ArticleLine, "LinCodlin", "LinDescri"),
-                            TempData["selectedLine"].ToString(),
-                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
-                    </div>
-                    <div class="col-auto">
-                        <label asp-for="ArtCodmar" class="form-label"></label>
-                        @Html.DropDownListFor(
-                            m => m.ArtCodmar,
-                            new SelectList(ViewBag.ArticleBrand, "MarCodmar", "MarDescri"),
-                            TempData["selectedBrand"].ToString(),
-                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
-                    </div>
-                </div>
+            <div @Html.Raw(((string)TempData["FormType"])=="generalData" ? "style = 'display: block'":"style = 'display: none'")>
+                <partial name="_generalData" model="Model">
+            </div>
+            <div @Html.Raw(((string)TempData["FormType"]) == "priceData" ? "style = 'display: block'" : "style = 'display: none'")>
+                <partial name="_priceData" model="Model">
             </div>
             <div class="card-footer">
                 <div class="row justify-content-end">
                     <div class="col-auto">
                         @Html.ActionLink(
-                         "Cancelar",
-                         "CancelAction",
-                         "Articulos",
-                         htmlAttributes:
-                         ((bool)TempData["FormMode"]) ? new { @class = "btn btn-secondary disabled" } : new { onclick = "return confirm('Seguro que desea perder los cambios?')", @class = "btn btn-secondary" })
+                             "Cancelar",
+                             "CancelAction",
+                             "Articulos",
+                             htmlAttributes:
+                             ((bool)TempData["FormMode"]) ? new { @class = "btn btn-secondary disabled" } : new { onclick = "return confirm('Seguro que desea perder los cambios?')", @class = "btn btn-secondary" })
                     </div>
                     <div class="col-auto">
                         <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Confirmar</button>
                     </div>
                 </div>
             </div>
-        </form>
     </div>
 
 </div>
@@ -265,3 +139,5 @@
         <partial name="_ValidationScriptsPartial" />
     }
 }
+
+

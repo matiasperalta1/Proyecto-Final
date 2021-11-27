@@ -33,7 +33,6 @@ namespace ProyectoFinalElectricidadSeret.Models
         [Required]
         public string ArtDescri { get; set; }
         [DisplayName("Descripcion Larga")]
-        [Required]
         public string ArtDescrl { get; set; }
         [Required]
         public bool ArtDiscon { get; set; }
@@ -50,8 +49,12 @@ namespace ProyectoFinalElectricidadSeret.Models
         [Required]
         public string ArtCodmar { get; set; }
         public int ArtEmbala { get; set; }
+        [DisplayName("Unidad de Medida - Compra")]
         public string ArtUmcomp { get; set; }
+        [DisplayName("Unidad de Medida - Venta")]
         public string ArtUmvent { get; set; }
+        [DisplayName("Coeficiente de Relacion")]
+        [Required]
         public decimal ArtCoefcv { get; set; }
         public decimal ArtStoact { get; set; }
         public decimal ArtStocom { get; set; }
@@ -62,13 +65,25 @@ namespace ProyectoFinalElectricidadSeret.Models
         public int ArtCodpro { get; set; }
         public DateTime? ArtUltcom { get; set; }
         public DateTime? ArtUltact { get; set; }
+        [DisplayName("Precio de Costo")]
+        [Required]
         public decimal ArtPrecos { get; set; }
+        [DisplayName("Descuento S/ Precio de Lista")]
+        [Required]
         public decimal ArtDtocom { get; set; }
+        [DisplayName("% IVA")]
+        [Required]
         public decimal ArtValiva { get; set; }
+        [DisplayName("Moneda")]
+        [Required]
         public int ArtCodmon { get; set; }
         public int? ArtTipimp { get; set; }
         public decimal? ArtImpues { get; set; }
+        [DisplayName("Descuento S/ Precio de Venta")]
+        [Required]
         public decimal ArtDtovta { get; set; }
+        [DisplayName("Comision Sobre Venta")]
+        [Required]
         public decimal ArtComvta { get; set; }
         public string ArtImagen { get; set; }
         public string ArtCtacom { get; set; }

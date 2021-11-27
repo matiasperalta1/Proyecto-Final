@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "77XH9tsQP1m+xoRwOdxqxQUgXH4fNiZoCDmPyKiDPdfer1O1BPKSV2hox7Jrr5gDl6VJ7Fko219ma+MI79bQtA==",
+  "dgSpecHash": "9ncEOTpxRf9IZgQfjWbK0wt7CfIOqyFqfkBr1uGxhKREZBq8GjYxxAOrrtMelTqqxd0XJcA5j9b9Wk3Oy618nA==",
   "success": true,
-  "projectFilePath": "D:\\GitHub\\Proyecto-Final\\ProyectoFinalElectricidadSeret\\ProyectoFinalElectricidadSeret.csproj",
+  "projectFilePath": "C:\\Users\\ornec\\GitHub\\Proyecto-Final\\ProyectoFinalElectricidadSeret\\ProyectoFinalElectricidadSeret.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ornec\\.nuget\\packages\\bouncycastle.netcore\\1.8.5\\bouncycastle.netcore.1.8.5.nupkg.sha512",
     "C:\\Users\\ornec\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

@@ -47,7 +47,7 @@
             <ul>
                 <li>
                     @menuLvl1.Lvl1_MenuName
-                </li>  
+                </li>
 
                 @foreach (MenuLvL2 menuLvL2 in menuLvl1.Lvl2_MenuItems)
                 {
@@ -57,15 +57,15 @@
                         </li>
                         @if (menuLvL2.Lvl3_MenuItems != null)
                         {
-                        <ul>
+                            <ul>
 
-                            @foreach (MenuItem menuLvl3 in menuLvL2.Lvl3_MenuItems)
-                            {
-                                <li>
-                                    <a asp-controller="@menuLvl3.MenuItemController" asp-action="@menuLvl3.MenuItemAction"><strong>@menuLvl3.MenuItemName</strong></a>
-                                </li>
-                            }
-                        </ul>
+                                @foreach (MenuItem menuLvl3 in menuLvL2.Lvl3_MenuItems)
+                                {
+                                    <li>
+                                        <a asp-controller="@menuLvl3.MenuItemController" asp-action="@menuLvl3.MenuItemAction"><strong>@menuLvl3.MenuItemName</strong></a>
+                                    </li>
+                                }
+                            </ul>
                         }
 
                     </ul>
@@ -90,7 +90,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <!-- jQuery Custom Scroller CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>

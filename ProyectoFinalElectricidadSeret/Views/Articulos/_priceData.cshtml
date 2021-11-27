@@ -1,0 +1,65 @@
+﻿@model Articulo
+
+<form method="post">
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row m-1">
+            <div class="col-auto">
+                <label asp-for="ArtPrecos"></label>
+                @Html.TextBoxFor(
+                    m => m.ArtPrecos,
+                    htmlAttributes:
+                    ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                )
+                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+            </div>
+            <div class="col-auto">
+                <label asp-for="ArtDtocom"></label>
+                @Html.TextBoxFor(
+                    m => m.ArtDtocom,
+                    htmlAttributes:
+                    ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                )
+                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+            </div>
+            <div class="col-auto">
+                <label asp-for="ArtDtovta"></label>
+                @Html.TextBoxFor(
+                    m => m.ArtDtovta,
+                    htmlAttributes:
+                    ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                )
+                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+            </div>
+            <div class="col-auto">
+                <label asp-for="ArtComvta"></label>
+                @Html.TextBoxFor(
+                    m => m.ArtComvta,
+                    htmlAttributes:
+                    ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                )
+                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row m-">
+            <div class="col-auto">
+                <label asp-for="ArtValiva" class="form-label"></label>
+                @Html.DropDownListFor(
+                    m => m.ArtValiva,
+                    new SelectList(ViewBag.ArticleIva, "IvaValiva", "IvaValiva"),
+                    TempData["selectedIva"].ToString(),
+                    ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+            </div>
+            <div class="col-auto">
+                <label asp-for="ArtCodmon" class="form-label"></label>
+                @Html.DropDownListFor(
+                    m => m.ArtCodmon,
+                    new SelectList(ViewBag.ArticleCurrency, "MonCodmon", "MonDescri"),
+                    TempData["selectedCurrency"].ToString(),
+                    ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+            </div>
+        </div>
+
+
+    </div>
+</form>

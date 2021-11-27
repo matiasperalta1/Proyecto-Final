@@ -1,0 +1,222 @@
+﻿@model Articulo
+    
+<form asp-controller="Articulos" asp-action="SaveGeneralData" method="post">
+
+    <div class="card-body" @Html.Raw(((string)TempData["FormType"]) == "generalData" ? "style = 'display:block'" : "style = 'display:none'")>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row m-1">
+            <div class="col-auto">
+                <div class="form-group">
+
+                    <label asp-for="ArtCodart"></label>
+                    @Html.TextBoxFor(
+                        m => m.ArtCodart,
+                        htmlAttributes:
+                        ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class="form-control" } : new { @class = "form-control" }
+                    )
+                    <span asp-validation-for="ArtCodart" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="form-group">
+                    <label asp-for="ArtCodbar"></label>
+                    @Html.TextBoxFor(
+                        m => m.ArtCodbar,
+                        htmlAttributes:
+                        ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                    )
+                    <span asp-validation-for="ArtCodbar" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="form-group">
+                    <label asp-for="ArtCodori"></label>
+                    @Html.TextBoxFor(
+                        m => m.ArtCodori,
+                        htmlAttributes:
+                        ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                    )
+                    <span asp-validation-for="ArtCodori" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-auto">
+                <div class="form-group">
+                    <label asp-for="ArtDescri"></label>
+                    @Html.TextBoxFor(
+                        m => m.ArtDescri,
+                        htmlAttributes:
+                        ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                    )
+                    <span asp-validation-for="ArtDescri" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-auto align-middle">
+                @if (Model.ArtDispon == true)
+                {
+                    <div class="form-check">
+                        <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" asp-for="ArtDispon" value="true" id="Available" checked>
+                        <label class="form-check-label" for="Available">
+                            Disponible para Comercializar
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" value="true" id="Discontinuos" asp-for="ArtDiscon">
+                        <label class="form-check-label" for="Discontinuos">
+                            Discontinuado
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-check">
+                        <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" value="true" asp-for="ArtDispon" id="Available">
+                        <label class="form-check-label" for="Available">
+                            Disponible para Comercializar
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-check-input" type="radio" name="flexRadioDefault" value="true" id="Discontinuos" asp-for="ArtDiscon" checked>
+                        <label class="form-check-label" for="Discontinuos">
+                            Discontinuado
+                        </label>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="row m-1">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label asp-for="ArtDescrl" class="form-label"></label>
+                    @Html.TextAreaFor(
+                        m => m.ArtDescrl,
+                        htmlAttributes:
+                        ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                    )
+                </div>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-2">
+                <label asp-for="ArtCodtar" class="form-label"></label>
+                <select @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-select" asp-for="ArtCodtar">
+                    @foreach (Tipoart tipArt in ViewBag.ArticleTypes)
+                    {
+                        if (tipArt.TarCodtar == Model.ArtCodtar)
+                        {
+                            <option selected value="@tipArt.TarCodtar">@tipArt.TarDescri</option>
+                        }
+                        else
+                        {
+                            <option value="@tipArt.TarCodtar">@tipArt.TarDescri</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body">
+                        <label asp-for="ArtCompue" class="form-label"></label>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(m => m.ArtCompue, 0, ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
+                            <label class="form-check-label" for="Unique">
+                                Articulo Unico
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(m => m.ArtCompue, 1, ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
+                            <label class="form-check-label" for="Head">
+                                Cabecera de Grupo
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(m => m.ArtCompue, 2, ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
+                            <label class="form-check-label" for="Member">
+                                Integrante de Grupo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.ArtAcondi,
+                        ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
+                    <label class="form-check-label" asp-for="ArtAcondi">
+                        C/ Acond.
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row row-cols-4 m-1">
+            <div class="col-3">
+                <label asp-for="ArtCodrub" class="form-label"></label>
+                @Html.DropDownListFor(
+                    m => m.ArtCodrub,
+                    new SelectList(ViewBag.ArticleCategory, "RubCodrub", "RubDescri"),
+                    TempData["selectedCategory"].ToString(),
+                    ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+
+            </div>
+            <div class="col-3">
+
+                <label asp-for="ArtCodsru" class="form-label"></label>
+                @Html.DropDownListFor(
+                    m => m.ArtCodsru,
+                    new SelectList(((List<Subrubro>)ViewBag.ArticleSubCategory).Where(s => s.SruCodrub == Model.ArtCodrub),
+                        "SruCodsru", "SruDescri"),
+                    TempData["selectedSubCategory"].ToString(),
+                    ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+            </div>
+            <div class="col-3">
+                <label asp-for="ArtCodlin" class="form-label"></label>
+                @Html.DropDownListFor(
+                    m => m.ArtCodlin,
+                    new SelectList(ViewBag.ArticleLine, "LinCodlin", "LinDescri"),
+                    TempData["selectedLine"].ToString(),
+                    ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+            </div>
+            <div class="col-3">
+                <label asp-for="ArtCodmar" class="form-label"></label>
+                @Html.DropDownListFor(
+                    m => m.ArtCodmar,
+                    new SelectList(ViewBag.ArticleBrand, "MarCodmar", "MarDescri"),
+                    TempData["selectedBrand"].ToString(),
+                    ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-auto">
+                <div class="form-group">
+                    <label asp-for="ArtUmcomp"></label>
+                    <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtUmcomp + "'" : "value='" + Model.ArtUmcomp + "'") class="form-control" type="text" asp-for="ArtUmcomp" />
+                    <span asp-validation-for="ArtUmcomp" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="form-group">
+                    <label asp-for="ArtUmvent"></label>
+                    <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtUmvent + "'" : "value='" + Model.ArtUmvent + "'") class="form-control" type="text" asp-for="ArtUmvent" />
+                    <span asp-validation-for="ArtUmvent" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="form-group">
+                    <label asp-for="ArtCoefcv"></label>
+                    <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.ArtCoefcv + "'" : "value='" + Model.ArtCoefcv + "'") class="form-control" type="text" asp-for="ArtCoefcv" />
+                    <span asp-validation-for="ArtCoefcv" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row m-1 justify-content-end">
+            <div class="col-3">
+                <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Guardar Datos Generales</button>
+            </div>
+        </div>
+    </div>
+</form>
