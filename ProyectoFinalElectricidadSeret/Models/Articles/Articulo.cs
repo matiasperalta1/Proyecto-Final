@@ -32,6 +32,8 @@ namespace ProyectoFinalElectricidadSeret.Models
         [DisplayName("Descripcion")]
         [Required]
         public string ArtDescri { get; set; }
+        [DisplayName("Descripcion Larga")]
+        [Required]
         public string ArtDescrl { get; set; }
         [Required]
         public bool ArtDiscon { get; set; }

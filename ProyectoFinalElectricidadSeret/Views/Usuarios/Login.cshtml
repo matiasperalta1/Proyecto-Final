@@ -4,7 +4,7 @@
 <div class="container border p-lg-4">
     <h4>Login</h4>
     <hr />
-    <div class="row">
+    <div class="row m-1">
         <div class="col-md-4">
             <form asp-controller="Usuarios" asp-action="LoginUser">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -18,7 +18,7 @@
                     <input asp-for="UsuContras" type="text" class="form-control" required />
                     <span asp-validation-for="UsuContras" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group m-1">
                     <input type="submit" value="Login" class="btn btn-primary" />
                 </div>
             </form>

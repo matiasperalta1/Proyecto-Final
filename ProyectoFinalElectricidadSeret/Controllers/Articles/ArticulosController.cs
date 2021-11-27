@@ -26,8 +26,23 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
             return View();
         }
 
-        public async Task<IActionResult> ArticlesABMC()
+        public async Task<IActionResult> ArticlesABMC(string id)
         {
+            switch (id)
+            {
+                case "edit":
+                    TempData["FormMode"] = false;
+                    TempData["ActionButtons"] = true;
+                    break;
+                case "add":
+                    TempData["FormMode"] = false;
+                    TempData["ActionButtons"] = true;
+                    break;
+                case null:
+                    TempData["FormMode"] = true;
+                    TempData["ActionButtons"] = false;
+                    break;
+            }
             Articulo currentArticle = new Articulo();
             if (TempData.ContainsKey("currentArticle"))
             {
