@@ -26,21 +26,24 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
             return View();
         }
 
-        public async Task<IActionResult> ArticlesABMC(string id)
+        public async Task<IActionResult> ArticlesABMC(string mode, string id)
         {
-            switch (id)
+            switch (mode)
             {
                 case "edit":
                     TempData["FormMode"] = false;
                     TempData["ActionButtons"] = true;
+                    TempData["AddButton"] = true;
                     break;
                 case "add":
                     TempData["FormMode"] = false;
                     TempData["ActionButtons"] = true;
+                    TempData["AddButton"] = true;
                     break;
                 case null:
                     TempData["FormMode"] = true;
                     TempData["ActionButtons"] = false;
+                    TempData["AddButton"] = false;
                     break;
             }
             Articulo currentArticle = new Articulo();
@@ -48,6 +51,22 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
             {
                 currentArticle = JsonConvert.DeserializeObject<Articulo>(TempData["currentArticle"].ToString());
             }
+            if (id != null)
+            {
+                currentArticle = JsonConvert.DeserializeObject<Articulo>(JsonConvert.SerializeObject(await _context.Articulos.Where(a=>a.ArtCodart==id).FirstOrDefaultAsync()));
+            }
+            MapSelects();
+            IEnumerable<Tipoart> articleTypes = await _context.Tipoarts.ToListAsync();
+            ViewBag.ArticleTypes = articleTypes;
+            ViewBag.ArticleCategory = await _context.Rubros.ToListAsync();
+            ViewBag.ArticleSubCategory = await _context.Subrubros.ToListAsync();
+            ViewBag.ArticleLine = await _context.Lineas.ToListAsync();
+            ViewBag.ArticleBrand = await _context.Marcas.ToListAsync();
+            return View(currentArticle);
+            
+        }
+
+        public void MapSelects() {
             if (!TempData.ContainsKey("selectedCategory"))
             {
                 TempData["selectedCategory"] = "Seleccione un Rubro";
@@ -64,14 +83,6 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
             {
                 TempData["selectedBrand"] = "Seleccione una Marca";
             }
-            IEnumerable<Tipoart> articleTypes = await _context.Tipoarts.ToListAsync();
-            ViewBag.ArticleTypes = articleTypes;
-            ViewBag.ArticleCategory = await _context.Rubros.ToListAsync();
-            ViewBag.ArticleSubCategory = await _context.Subrubros.ToListAsync();
-            ViewBag.ArticleLine = await _context.Lineas.ToListAsync();
-            ViewBag.ArticleBrand = await _context.Marcas.ToListAsync();
-            return View(currentArticle);
-            
         }
 
         public async Task<IActionResult> GetArticle(Articulo articulo)
@@ -94,8 +105,11 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
         }
 
 
+        public async Task<IActionResult> CancelAction()
+        {
+            return RedirectToAction("ArticlesABMC", "Articulos");
+        }
 
-        
 
     }
 }

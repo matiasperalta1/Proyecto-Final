@@ -460,4 +460,3 @@ D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\Microso
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Home\NotAvailable.cshtml.g.cs
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\libman.json
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\ArticlesABMC.cshtml.g.cs
-D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.csproj.AssemblyReference.cache
