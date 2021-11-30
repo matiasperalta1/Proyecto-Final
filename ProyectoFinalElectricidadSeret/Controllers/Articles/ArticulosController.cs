@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ProyectoFinalElectricidadSeret.Data;
 using ProyectoFinalElectricidadSeret.Models;
+using ProyectoFinalElectricidadSeret.Models.Accountancy;
 
 namespace ProyectoFinalElectricidadSeret.Controllers.Articles
 {
@@ -65,18 +66,43 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
             Articulo currentArticle = new Articulo();
             if (HttpContext.Session.Keys.Contains("currentArticle"))
             {
-                currentArticle = JsonConvert.DeserializeObject<Articulo>(HttpContext.Session.GetString("currentArticle"));
+                currentArticle = JsonConvert.DeserializeObject<Articulo>(HttpContext.Session.GetString("currentArticle").ToString());
             }
             if (id != null)
             {
                 currentArticle = JsonConvert.DeserializeObject<Articulo>(JsonConvert.SerializeObject(await _context.Articulos.Where(a=>a.ArtCodart==id).FirstOrDefaultAsync()));
             }
             MapSelects();
-            
+            if (currentArticle.ArtCodart != null)
+            {
+                ViewBag.PriceLists = await MapPriceList(currentArticle.ArtCodart.ToString());
+                currentArticle.ArticStocks = await _context.ArticStocks.Where(s => s.AstCodart == currentArticle.ArtCodart).ToListAsync();
+            }
             return View(currentArticle);
             
         }
 
+        public async Task<List<PriceList>> MapPriceList(string articulo)
+        {
+            List<PriceList> priceList = new List<PriceList>();
+            IEnumerable<Listapre> listapres = await _context.Listapres.OrderBy(l => l.LipCodlis).ToListAsync();
+            Precio precio = await _context.Precios.Where(p => p.PreCodart == articulo).FirstOrDefaultAsync();
+            for(var i = 1;i <= 15; i++)
+            {
+                PriceList price = new PriceList();
+                price.NomLista = listapres.ToList()[i-1].LipNombre;
+                price.NroLista = listapres.ToList()[i-1].LipCodlis;
+                price.PConIva = (decimal)precio.GetType().GetProperty("PrePvci" + i.ToString("000")).GetValue(precio, null);
+                price.PSinIva = (decimal)precio.GetType().GetProperty("PrePvsi" + i.ToString("000")).GetValue(precio, null);
+                price.Utilidad = (decimal)precio.GetType().GetProperty("PreUtil" + i.ToString("000")).GetValue(precio, null);
+                price.TipoAct = (string)precio.GetType().GetProperty("PreTcal" + i.ToString("000")).GetValue(precio, null);
+                int codmoneda= Int32.Parse(precio.GetType().GetProperty("PreCmon" + i.ToString("000")).GetValue(precio, null).ToString());
+                price.Moneda = await _context.Monedas.Where(m => m.MonCodmon == codmoneda).Select(m => m.MonDescri).FirstOrDefaultAsync();
+                priceList.Add(price);
+            }
+            return priceList;
+
+        }
 
         public async void MapSelects() {
             if (!TempData.ContainsKey("selectedCategory"))
@@ -160,6 +186,29 @@ namespace ProyectoFinalElectricidadSeret.Controllers.Articles
             originalArticle.ArtUmcomp = articulo.ArtUmcomp;
             originalArticle.ArtUmvent = articulo.ArtUmvent;
             originalArticle.ArtCoefcv = articulo.ArtCoefcv;
+            HttpContext.Session.SetString("currentArticle", JsonConvert.SerializeObject(originalArticle));
+            return RedirectToAction("ArticlesABMC", "Articulos", new { mode = TempData["Mode"].ToString() });
+        }
+
+        public async Task<IActionResult> SavePriceData(Articulo articulo)
+        {
+            Articulo originalArticle = JsonConvert.DeserializeObject<Articulo>(HttpContext.Session.GetString("currentArticle"));
+            originalArticle.ArtPrecos = articulo.ArtPrecos;
+            originalArticle.ArtDtocom = articulo.ArtDtocom;
+            originalArticle.ArtDtovta = articulo.ArtDtovta;
+            originalArticle.ArtComvta = articulo.ArtComvta;
+            originalArticle.ArtValiva = articulo.ArtValiva;
+            originalArticle.ArtCodmon = articulo.ArtCodmon;
+            HttpContext.Session.SetString("currentArticle", JsonConvert.SerializeObject(originalArticle));
+            return RedirectToAction("ArticlesABMC", "Articulos", new { mode = TempData["Mode"].ToString()});
+        }
+
+        public async Task<IActionResult> SaveStockData(Articulo articulo)
+        {
+            Articulo originalArticle = JsonConvert.DeserializeObject<Articulo>(HttpContext.Session.GetString("currentArticle"));
+            originalArticle.ArtStomax = articulo.ArtStomax;
+            originalArticle.ArtStomin = articulo.ArtStomin;
+            originalArticle.ArtStover = articulo.ArtStover;
             HttpContext.Session.SetString("currentArticle", JsonConvert.SerializeObject(originalArticle));
             return RedirectToAction("ArticlesABMC", "Articulos", new { mode = TempData["Mode"].ToString() });
         }

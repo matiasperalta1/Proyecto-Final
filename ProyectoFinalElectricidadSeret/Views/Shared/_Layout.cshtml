@@ -95,6 +95,17 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="@Url.Content("~/Scripts/jquery.globalize/globalize.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.globalize/cultures/globalize.culture.da-DK.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $.validator.methods.number = function (value, element) {
+            return !isNaN(Globalize.parseFloat(value));
+        }
+
+        $(document).ready(function () {
+            Globalize.culture('da-DK');
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 

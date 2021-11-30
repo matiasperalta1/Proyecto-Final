@@ -57,79 +57,95 @@
     <div class="card m-1">
         <div class="card-header">
             <ul class="nav nav-tabs">
-            @if (Model.ArtCodart == null && ((bool)TempData["FormMode"]) != false)
-            {
-               <li class="nav-item">
-                   <button class="nav-link disabled">Datos Generales</button>
-               </li>
-               <li class="nav-item">
-                   <button class="nav-link disabled">Precios</button>
-               </li>
-               <li class="nav-item">
-                   <button class="nav-link disabled">Acondicionamiento y Stock</button>
-               </li>
-               <li class="nav-item">
-                   <button class="nav-link disabled">Datos Adicionales</button>
-               </li>
-            }
-            else
-            {
-            <li class="nav-item">
-                @Html.ActionLink(
-                         "Datos Generales",
-                         "ChangeMode",
-                         "Articulos",
-                         new { mode = "generalData" },
-                         ((string)TempData["FormType"]) == "priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
-            </li>
-                <li class="nav-item">
-                    @Html.ActionLink(
-                             "Precios",
+                @if (Model.ArtCodart == null && ((bool)TempData["FormMode"]) != false)
+                {
+                    <li class="nav-item">
+                        <button class="nav-link disabled">Datos Generales</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link disabled">Precios</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link disabled">Acondicionamiento y Stock</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link disabled">Datos Adicionales</button>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        @Html.ActionLink(
+                                 "Datos Generales",
+                                 "ChangeMode",
+                                 "Articulos",
+                                 new { mode = "generalData" },
+                                 ((string)TempData["FormType"]) == "generalData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(
+                                 "Precios",
+                                 "ChangeMode",
+                                 "Articulos",
+                                 new { mode = "priceData" },
+                                 ((string)TempData["FormType"]) == "priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(
+                             "Acondicionamiento y Stock",
                              "ChangeMode",
                              "Articulos",
-                             new {mode="priceData" },
-                             ((string)TempData["FormType"])=="priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink(
-                         "Acondicionamiento y Stock",
-                         "ChangeMode",
-                         "Articulos",
-                         new { mode = "generalData" },
-                         ((string)TempData["FormType"]) == "stockData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink(
-                         "Datos Adicionales",
-                         "ChangeMode",
-                         "Articulos",
-                         new { mode = "adicionalData" },
-                         ((string)TempData["FormType"]) == "priceData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
-                </li>
-            }
+                             new { mode = "stockData" },
+                             ((string)TempData["FormType"]) == "stockData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(
+                             "Datos Adicionales",
+                             "ChangeMode",
+                             "Articulos",
+                             new { mode = "adicionalData" },
+                             ((string)TempData["FormType"]) == "adicionalData" ? new { @class = "nav-link active" } : new { @class = "nav-link " })
+                    </li>
+                }
             </ul>
         </div>
-            <div @Html.Raw(((string)TempData["FormType"])=="generalData" ? "style = 'display: block'":"style = 'display: none'")>
-                <partial name="_generalData" model="Model">
-            </div>
-            <div @Html.Raw(((string)TempData["FormType"]) == "priceData" ? "style = 'display: block'" : "style = 'display: none'")>
-                <partial name="_priceData" model="Model">
-            </div>
-            <div class="card-footer">
-                <div class="row justify-content-end">
-                    <div class="col-auto">
-                        @Html.ActionLink(
-                             "Cancelar",
-                             "CancelAction",
-                             "Articulos",
-                             htmlAttributes:
-                             ((bool)TempData["FormMode"]) ? new { @class = "btn btn-secondary disabled" } : new { onclick = "return confirm('Seguro que desea perder los cambios?')", @class = "btn btn-secondary" })
-                    </div>
-                    <div class="col-auto">
-                        <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Confirmar</button>
-                    </div>
+        <div @Html.Raw(((string)TempData["FormType"]) == "generalData" ? "style = 'display: block'" : "style = 'display: none'")>
+            <partial name="_generalData" model="Model">
+        </div>
+        <div @Html.Raw(((string)TempData["FormType"]) == "priceData" ? "style = 'display: block'" : "style = 'display: none'")>
+            <partial name="_priceData" model="Model">
+        </div>
+        <div class="card m-2" @Html.Raw(((string)TempData["FormType"]) == "stockData" ? "style = 'display: block'" : "style = 'display: none'")>
+            <label class="m-1">Stock</label>
+            <div class="card-body">
+                <div @Html.Raw(((string)TempData["FormType"]) == "stockData" ? "style = 'display: block'" : "style = 'display: none'")>
+                    <partial name="_stockData" model="Model">
                 </div>
             </div>
+        </div>
+        <div class="card m-2" @Html.Raw(((string)TempData["FormType"]) == "stockData" ? "style = 'display: block'" : "style = 'display: none'")>
+            <label class="m-1">Stock</label>
+            <div class="card-body">
+                <div @Html.Raw(((string)TempData["FormType"]) == "stockData" ? "style = 'display: block'" : "style = 'display: none'")>
+                    <partial name="_acondData" model="Model">
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    @Html.ActionLink(
+                         "Cancelar",
+                         "CancelAction",
+                         "Articulos",
+                         htmlAttributes:
+                         ((bool)TempData["FormMode"]) ? new { @class = "btn btn-secondary disabled" } : new { onclick = "return confirm('Seguro que desea perder los cambios?')", @class = "btn btn-secondary" })
+                </div>
+                <div class="col-auto">
+                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Confirmar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

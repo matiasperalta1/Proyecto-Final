@@ -1,0 +1,49 @@
+﻿@model Articulo
+
+<form method="post" asp-controller="Articulos" asp-action="SaveStockData">
+    <div class="card">
+        <div class="card-body">
+            <label>Minimos y Maximos</label>
+            <div class="row m-1">
+                <div class="col-auto">
+                    <div class="form-group">
+
+                        <label asp-for="ArtStomin"></label>
+                        @Html.TextBoxFor(
+                            m => m.ArtStomin,
+                            htmlAttributes:
+                            ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                        )
+                        <span asp-validation-for="ArtStomin" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-group">
+
+                        <label asp-for="ArtStomax"></label>
+                        @Html.TextBoxFor(
+                            m => m.ArtStomax,
+                            htmlAttributes:
+                            ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
+                        )
+                        <span asp-validation-for="ArtStomax" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.ArtStover,
+                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled" } : null)
+                        <label class="form-check-label" asp-for="ArtStover">
+                            Stock Verificado
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-1 justify-content-end">
+        <div class="col-3">
+            <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Guardar Datos de Stock</button>
+        </div>
+    </div>
+</form>

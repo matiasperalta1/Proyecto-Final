@@ -925,3 +925,4 @@ C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\ne
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_generalData.cshtml.g.cs
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_priceData.cshtml.g.cs
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.csproj.AssemblyReference.cache
+C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_stockData.cshtml.g.cs

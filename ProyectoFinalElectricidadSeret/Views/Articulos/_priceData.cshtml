@@ -1,6 +1,6 @@
 ﻿@model Articulo
-
-<form method="post">
+@using ProyectoFinalElectricidadSeret.Models.Accountancy;
+<form method="post" asp-controller="Articulos" asp-action="SavePriceData">
     <div class="card-body">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row m-1">
@@ -11,7 +11,7 @@
                     htmlAttributes:
                     ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
                 )
-                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+                <span asp-validation-for="ArtPrecos" class="text-danger"></span>
             </div>
             <div class="col-auto">
                 <label asp-for="ArtDtocom"></label>
@@ -20,7 +20,7 @@
                     htmlAttributes:
                     ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
                 )
-                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+                <span asp-validation-for="ArtDtocom" class="text-danger"></span>
             </div>
             <div class="col-auto">
                 <label asp-for="ArtDtovta"></label>
@@ -29,7 +29,7 @@
                     htmlAttributes:
                     ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
                 )
-                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+                <span asp-validation-for="ArtDtovta" class="text-danger"></span>
             </div>
             <div class="col-auto">
                 <label asp-for="ArtComvta"></label>
@@ -38,10 +38,10 @@
                     htmlAttributes:
                     ((bool)TempData["FormMode"]) ? new { @disabled = "true", @class = "form-control" } : new { @class = "form-control" }
                 )
-                <span asp-validation-for="ArtCodori" class="text-danger"></span>
+                <span asp-validation-for="ArtComvta" class="text-danger"></span>
             </div>
         </div>
-        <div class="row m-">
+        <div class="row m-1">
             <div class="col-auto">
                 <label asp-for="ArtValiva" class="form-label"></label>
                 @Html.DropDownListFor(
@@ -59,7 +59,43 @@
                     ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
             </div>
         </div>
+        <div class="row m-1">
+            <table class="table table-sm table-striped ">
+                <thead>
+                    <tr>
+                        <th scope="col">Nro</th>
+                        <th scope="col">Lista</th>
+                        <th scope="col">Tipo Act.</th>
+                        <th scope="col">Utilidad</th>
+                        <th scope="col">Precio s/IVA</th>
+                        <th scope="col">Precio c/IVA</th>
+                        <th scope="col">Moneda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if(ViewBag.PriceLists != null) 
+                { 
+                    @foreach (PriceList price in ViewBag.PriceLists)
+                    {
+                        <tr>
+                            <td>@price.NroLista</td>
+                            <td>@price.NomLista</td>
+                            <td>@price.TipoAct</td>
+                            <td>@price.Utilidad</td>
+                            <td>@price.PSinIva</td>
+                            <td>@price.PConIva</td>
+                            <td>@price.Moneda</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
 
-
+        <div class="row m-1 justify-content-end">
+            <div class="col-3">
+                <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Guardar Precios</button>
+            </div>
+        </div>
     </div>
 </form>

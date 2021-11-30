@@ -66,6 +66,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         public DateTime? ArtUltcom { get; set; }
         public DateTime? ArtUltact { get; set; }
         [DisplayName("Precio de Costo")]
+        [RegularExpression(@"^(\d+(?:[\,]\d{1,2})?)$", ErrorMessage = "El Campo Ingresado debe ser un Numero")]
         [Required]
         public decimal ArtPrecos { get; set; }
         [DisplayName("Descuento S/ Precio de Lista")]
@@ -103,7 +104,7 @@ namespace ProyectoFinalElectricidadSeret.Models
         [Required]
         public bool ArtDispon { get; set; }
         public string ArtCodcab { get; set; }
-        public byte ArtStover { get; set; }
+        public bool ArtStover { get; set; }
         public bool ArtAcondi { get; set; }
         public string ArtImaux1 { get; set; }
         public string ArtImaux2 { get; set; }
