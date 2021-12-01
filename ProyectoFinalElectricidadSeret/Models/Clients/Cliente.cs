@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -16,20 +18,36 @@ namespace ProyectoFinalElectricidadSeret.Models
             RetClients = new HashSet<RetClient>();
         }
 
+        [DisplayName("Codigo de Cliente")]
+        [Required]
         public decimal CliCodcli { get; set; }
+        [DisplayName("Descripción")]
         public string CliDescri { get; set; }
+        [DisplayName("Dirección")]
+        [Required]
         public string CliDirecc { get; set; }
+        [DisplayName("Localidad")]
         public decimal CliCodloc { get; set; }
+        [DisplayName("Provincia")]
         public decimal CliCodprv { get; set; }
+        [DisplayName("Telefono")]
         public string CliTele1 { get; set; }
+
+        [DisplayName("Celular")]
         public string CliTele2 { get; set; }
+        [DisplayName("Fax")]
         public string CliFax { get; set; }
+        [DisplayName("Direccion email")]
         public string CliMail { get; set; }
+        [DisplayName("Pagina Web")]
         public string CliWeb { get; set; }
         public int CliCodciv { get; set; }
+        [DisplayName("Numero de Documento")]
+        [Required]
         public string CliCuit { get; set; }
         public string CliIngbru { get; set; }
-        public DateTime? CliFecalt { get; set; }
+        [DisplayName("Fecha Alta")]
+        public DateTime CliFecalt { get; set; }
         public int CliCodcpa { get; set; }
         public decimal CliSaldo { get; set; }
         public uint CliCodcac { get; set; }
@@ -50,7 +68,9 @@ namespace ProyectoFinalElectricidadSeret.Models
         public byte? CliCtacte { get; set; }
         public bool? CliRemito { get; set; }
         public uint CliCodtra { get; set; }
+        [DisplayName("Codigo postal")]
         public string CliCodpos { get; set; }
+        [DisplayName("Tipo de documento")]
         public int CliCodtdo { get; set; }
 
         public virtual Catclient CliCodcacNavigation { get; set; }

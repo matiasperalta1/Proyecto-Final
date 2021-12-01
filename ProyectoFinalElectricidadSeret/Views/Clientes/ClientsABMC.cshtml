@@ -1,0 +1,226 @@
+﻿@model Cliente
+
+<div class="container">
+
+    <div class="card m-1">
+        <div class="card-body">
+            <form class="row g-3" asp-controller="Clientes" asp-action="GetClient">
+                <div class="col-auto">
+                    <label asp-for="CliCodcli"></label>
+                    <input type="text" class="form-control" asp-for="CliCodcli">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success align-middle"><i class="fas fa-check"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+     <div class="card m-1">
+        <div class="card-body">
+            @if (Model.CliCodcli == 0)
+            {
+                @Html.ActionLink(
+                 "Agregar",
+                 "ClientsABMC",
+                 "Clientes",
+                 new { mode = "add" },
+                 new { @class = "btn btn-success" })
+                <button class="btn btn-secondary" disabled>Editar</button>
+                <button class="btn btn-danger" disabled>Eliminar</button>
+
+            }
+            @if (Model.CliCodcli != 0)
+            {
+                @Html.ActionLink(
+                 "Agregar",
+                 "ClientsABMC",
+                 "Clientes",
+                 new { mode = "add" },
+                 ((bool)TempData["AddButton"]) ? new { @class = "btn btn-success disabled m-1" } : new { @class = "btn btn-success m-1" })
+                @Html.ActionLink(
+                 "Editar",
+                 "ClientsABMC",
+                 "Clientes",
+                 new { mode = "edit", id = Model.CliCodcli },
+                 ((bool)TempData["ActionButtons"]) ? new { @class = "btn btn-secondary disabled m-1" } : new { @class = "btn btn-secondary m-1" })
+                @Html.ActionLink(
+                 "Eliminar",
+                 "ClientsABMC",
+                 "Clientes",
+                 new { mode = "delete", id = Model.CliCodcli },
+                 ((bool)TempData["ActionButtons"]) ? new { @class = "btn btn-danger disabled m-1" } : new { @class = "btn btn-danger m-1" })
+            }
+        </div>
+    </div>
+
+    <div class="card m-1">
+        <div class="card-header">
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link active'") class="nav-link active" aria-current="page">Datos Generales</button>
+                </li>
+                <li class="nav-item">
+                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Condiciones de pago</button>
+                </li>
+                <li class="nav-item">
+                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Operatoria</button>
+                </li>
+                <li class="nav-item">
+                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Contactos</button>
+                </li>
+                <li class="nav-item">
+                    <button @Html.Raw(((bool)TempData["FormMode"]) ? "class='nav-link disabled'" : "class='nav-link'") class="nav-link">Novedades</button>
+                </li>
+            </ul>
+        </div>
+        <form>
+            <div class="card-body">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliCodcli"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliCodcli + "'" : "") type="text" asp-for="CliCodcli" class="form-control" />
+                            <span asp-validation-for="CliCodcli" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliDescri"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliDescri + "'" : "") type="text" asp-for="CliDescri" class="form-control" />
+                            <span asp-validation-for="CliDescri" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliTele1"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliTele1 + "'" : "") type="text" asp-for="CliTele1" class="form-control" />
+                            <span asp-validation-for="CliTele1" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliTele2"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliTele2 + "'" : "") type="text" asp-for="CliTele1" class="form-control" />
+                            <span asp-validation-for="CliTele2" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliFax"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliFax + "'" : "") type="text" asp-for="CliFax" class="form-control" />
+                            <span asp-validation-for="CliFax" class="text-danger"></span>
+                        </div>
+                    </div>
+                     <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliMail"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliMail + "'" : "") type="text" asp-for="CliMail" class="form-control" />
+                            <span asp-validation-for="CliMail" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliWeb"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliWeb + "'" : "") class="form-control" type="text" asp-for="CliWeb" />
+                            <span asp-validation-for="CliWeb" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <label asp-for="CliCodtdo" class="form-label"></label>
+                        <select @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="form-select" asp-for="CliCodtdo">
+                            @foreach (Tiposdocumento tipCli in ViewBag.documentTypes)
+                            {
+                                if (tipCli.TdoCodtdo == Model.CliCodtdo)
+                                {
+                                    <option selected value="@tipCli.TdoCodtdo">@tipCli.TdoDescri</option>
+                                }
+                                else
+                                {
+                                    <option value="@tipCli.TdoCodtdo">@tipCli.TdoDescri</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliCuit"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliCuit + "'" : "") class="form-control" type="text" asp-for="CliCuit" />
+                            <span asp-validation-for="CliCuit" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-5 p-1">
+                     <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliDirecc"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliDirecc + "'" : "") class="form-control" type="text" asp-for="CliDirecc" />
+                            <span asp-validation-for="CliDirecc" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <label asp-for="CliCodprv" class="form-label"></label>
+                        @Html.DropDownListFor(
+                            m => m.CliCodprv,
+                            new SelectList(ViewBag.clientProvince, "PrvCodprv", "PrvDescri"),
+                            TempData["selectedProvince"].ToString(),
+                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+                    </div>
+                    <div class="col-auto">
+                        <label asp-for="CliCodloc" class="form-label"></label>
+                        @Html.DropDownListFor(
+                            m => m.CliCodloc,
+                            new SelectList(((List<Localidade>)ViewBag.clientLocation).Where(l => l.LocCodloc == Model.CliCodloc),
+                                "LocCodloc", "LocDescri"),
+                            TempData["selectedLocation"].ToString(),
+                            ((bool)TempData["FormMode"]) ? new { disabled = "disabled", @class = "form-select" } : new { @class = "form-select" })
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliCodpos"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliCodpos + "'" : "") class="form-control" type="text" asp-for="CliCodpos" />
+                            <span asp-validation-for="CliCodpos" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label asp-for="CliFecalt"></label>
+                            <input @Html.Raw(((bool)TempData["FormMode"]) ? "readonly value='" + Model.CliFecalt.ToShortDateString() + "'" : "") class="form-control" type="datetime" asp-for="CliFecalt" />
+                            <span asp-validation-for="CliFecalt" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div
+            </div>
+            <div class="card-footer">
+                <div class="row justify-content-end">
+                    <div class="col-auto">
+                        @Html.ActionLink(
+                         "Cancelar",
+                         "CancelAction",
+                         "Articulos",
+                         htmlAttributes:
+                         ((bool)TempData["FormMode"]) ? new { @class = "btn btn-secondary disabled" } : new { onclick = "return confirm('Seguro que desea perder los cambios?')", @class = "btn btn-secondary" })
+                    </div>
+                    <div class="col-auto">
+                        <button @Html.Raw(((bool)TempData["FormMode"]) ? "disabled=\"disabled\"" : "") class="btn btn-success" type="submit">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

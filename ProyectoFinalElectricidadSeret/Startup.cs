@@ -62,7 +62,7 @@ namespace ProyectoFinalElectricidadSeret
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Articulos}/{action=ArticlesABMC}/{mode?}/{id?}");
+                    pattern: "{controller=Clientes}/{action=ClientsABMC}/{mode?}/{id?}");
             });
         }
     }
