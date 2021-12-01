@@ -461,6 +461,7 @@ D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\V
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\libman.json
 D:\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\ArticlesABMC.cshtml.g.cs
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\appsettings.json
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\libman.json
@@ -928,6 +929,8 @@ C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\ne
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.csproj.AssemblyReference.cache
 C:\Users\ornec\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_stockData.cshtml.g.cs
 =======
+=======
+>>>>>>> Stashed changes
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\appsettings.json
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\bin\Debug\net5.0\libman.json
@@ -1392,8 +1395,11 @@ C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\o
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.pdb
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\ProyectoFinalElectricidadSeret.genruntimeconfig.cache
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Clientes\ClientsABMC.cshtml.g.cs
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\acondData.cshtml.g.cs
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_generalData.cshtml.g.cs
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_priceData.cshtml.g.cs
 C:\Users\Matias\Documents\GitHub\Proyecto-Final\ProyectoFinalElectricidadSeret\obj\Debug\net5.0\Razor\Views\Articulos\_stockData.cshtml.g.cs
+=======
+>>>>>>> Stashed changes
